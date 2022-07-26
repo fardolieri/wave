@@ -13,8 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { Todo, Meta } from './models';
+import { useLocalStorage } from '@vueuse/core';
 
 interface Props {
   title: string;
@@ -26,8 +27,9 @@ const props = withDefaults(defineProps<Props>(), {
   todos: () => [],
 });
 
-const clickCount = ref(0);
+const clickCount = useLocalStorage('click-count', 0);
 function increment() {
+  clickCount.value ??= 0;
   clickCount.value += 1;
   return clickCount.value;
 }
