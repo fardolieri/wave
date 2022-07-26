@@ -9,6 +9,7 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
 const { configure } = require('quasar/wrappers');
+const fs = require('fs');
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -79,7 +80,10 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      // https: true
+      https: {
+        cert: fs.readFileSync('cert/cert.pem'),
+        key: fs.readFileSync('cert/key.pem'),
+      },
       open: true, // opens browser window automatically
     },
 

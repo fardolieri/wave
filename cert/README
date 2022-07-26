@@ -1,0 +1,6 @@
+# What is this directory good for?
+
+You need to place your local certificate *cert.pem* and your according
+keyfile *key.pem* in this directory in order to make https work for
+your dev environment. The tool *mkcert* is your best friend to
+create a certificate (see https://github.com/FiloSottile/mkcert).
