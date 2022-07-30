@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+            <img src="/favicon.ico" />
           </q-avatar>
           Title
         </q-toolbar-title>
@@ -13,12 +13,14 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
+    <q-drawer
+      show-if-above
+      v-model="rightDrawerOpen"
+      side="right"
+      style="border: 1px solid #06083d44"
+    >
       <q-scroll-area> </q-scroll-area>
-      <q-img
-        class="absolute-top"
-        src="https://cdn.quasar.dev/img/material.png"
-      ></q-img>
+      <q-img class="absolute-top" src="./gggyrate.svg"></q-img>
     </q-drawer>
 
     <q-page-container>
