@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "dev": "quasar dev --mode pwa",
+    "ngrok": "ngrok http https://localhost:9200/",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0"
