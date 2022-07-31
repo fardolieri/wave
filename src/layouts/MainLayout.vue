@@ -65,31 +65,34 @@
           <q-list>
             <q-item
               v-for="(conversation, index) in conversations"
-              :key="conversation.id"
+              :key="conversation.csId"
               clickable
               v-ripple
               @click="setCurrentConversation(index)"
             >
               <q-item-section avatar>
                 <q-avatar>
-                  <img :src="conversation.avatar" />
+                  <img
+                    :src="`https://robohash.org/${conversation.csId}.png?set=set4`"
+                  />
                 </q-avatar>
               </q-item-section>
 
               <q-item-section>
-                <q-item-label lines="1">
-                  {{ conversation.person }}
+                <q-item-label
+                  lines="1"
+                  style="text-overflow: ellipsis; width: 5em"
+                >
+                  {{ conversation.csId }}
                 </q-item-label>
                 <q-item-label class="conversation__summary" caption>
-                  <q-icon name="check" v-if="conversation.sent" />
-                  {{ conversation.caption }}
+                  <q-icon name="check" />
+                  caption
                 </q-item-label>
               </q-item-section>
 
               <q-item-section side>
-                <q-item-label caption>
-                  {{ conversation.time }}
-                </q-item-label>
+                <q-item-label caption> 17:00 </q-item-label>
                 <q-icon name="keyboard_arrow_down" />
               </q-item-section>
             </q-item>
@@ -125,38 +128,10 @@ import { ref, computed } from 'vue';
 import MeHeader from 'src/components/MeHeader.vue';
 
 const conversations = [
-  {
-    id: 1,
-    person: 'Razvan Stoenescu',
-    avatar: 'https://cdn.quasar.dev/team/razvan_stoenescu.jpeg',
-    caption: "I'm working on Quasar!",
-    time: '15:00',
-    sent: true,
-  },
-  {
-    id: 2,
-    person: 'Dan Popescu',
-    avatar: 'https://cdn.quasar.dev/team/dan_popescu.jpg',
-    caption: "I'm working on Quasar!",
-    time: '16:00',
-    sent: true,
-  },
-  {
-    id: 3,
-    person: 'Jeff Galbraith',
-    avatar: 'https://cdn.quasar.dev/team/jeff_galbraith.jpg',
-    caption: "I'm working on Quasar!",
-    time: '18:00',
-    sent: true,
-  },
-  {
-    id: 4,
-    person: 'Allan Gaunt',
-    avatar: 'https://cdn.quasar.dev/team/allan_gaunt.png',
-    caption: "I'm working on Quasar!",
-    time: '17:00',
-    sent: true,
-  },
+  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7071' },
+  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7072' },
+  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7073' },
+  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7074' },
 ];
 
 const $q = useQuasar();

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { csId } from 'src/composables/use-id.js';
+import { csId } from 'src/utils/use-id.js';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
 
