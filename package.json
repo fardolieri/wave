@@ -1,8 +1,8 @@
 {
-  "name": "quasar-project",
+  "name": "clean-stream",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "A WebRTC based streaming client to share audio and video with your friends",
+  "productName": "Clean Stream",
   "author": "Daniel Mittereder <danielmittereder@gmail.com>",
   "private": true,
   "scripts": {
