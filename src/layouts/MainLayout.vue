@@ -1,8 +1,8 @@
 <template>
-  <div class="WAL position-relative bg-grey-4" :style="style">
+  <div class="WAL position-relative" :style="style">
     <q-layout view="lHh Lpr lFf" class="WAL__layout shadow-3" container>
       <q-header elevated>
-        <q-toolbar class="bg-grey-3 text-black">
+        <q-toolbar class="bg-dark-0">
           <q-btn
             round
             flat
@@ -54,15 +54,10 @@
         </q-toolbar>
       </q-header>
 
-      <q-drawer
-        v-model="leftDrawerOpen"
-        show-if-above
-        bordered
-        :breakpoint="690"
-      >
-        <q-toolbar class="bg-grey-3">
+      <q-drawer v-model="leftDrawerOpen" show-if-above :breakpoint="690">
+        <q-toolbar class="bg-dark-0">
           <q-avatar class="cursor-pointer">
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
+            <img src="./clean-stream.svg" />
           </q-avatar>
 
           <q-space />
@@ -102,13 +97,12 @@
           />
         </q-toolbar>
 
-        <q-toolbar class="bg-grey-2">
+        <q-toolbar class="bg-dark-0">
           <q-input
             rounded
             outlined
             dense
             class="WAL__field full-width"
-            bg-color="white"
             v-model="search"
             placeholder="Search or start a new conversation"
           >
@@ -118,7 +112,7 @@
           </q-input>
         </q-toolbar>
 
-        <q-scroll-area style="height: calc(100% - 100px)">
+        <q-scroll-area style="height: calc(100% - 100px)" class="bg-dark-0">
           <q-list>
             <q-item
               v-for="(conversation, index) in conversations"
@@ -155,19 +149,18 @@
         </q-scroll-area>
       </q-drawer>
 
-      <q-page-container class="bg-grey-2">
+      <q-page-container class="bg-dark-0">
         <router-view />
       </q-page-container>
 
       <q-footer>
-        <q-toolbar class="bg-grey-3 text-black row">
+        <q-toolbar class="row bg-dark-2">
           <q-btn round flat icon="insert_emoticon" class="q-mr-sm" />
           <q-input
             rounded
             outlined
             dense
             class="WAL__field col-grow q-mr-sm"
-            bg-color="white"
             v-model="message"
             placeholder="Type a message"
           />
@@ -267,14 +260,8 @@ export default {
   height: 100%
   padding-top: 20px
   padding-bottom: 20px
-
-  &:before
-    content: ''
-    height: 127px
-    position: fixed
-    top: 0
-    width: 100%
-    background-color: $secondary
+  background-image: url("./background.svg") !important
+  background-size: cover
 
   &__layout
     margin: 0 auto
