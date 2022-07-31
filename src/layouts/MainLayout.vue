@@ -1,61 +1,10 @@
 <template>
   <div class="WAL position-relative" :style="style">
     <q-layout view="lHh Lpr lFf" class="WAL__layout shadow-3" container>
-      <q-header elevated>
-        <q-toolbar class="bg-dark-0">
-          <q-btn
-            round
-            flat
-            icon="keyboard_arrow_left"
-            class="WAL__drawer-open q-mr-sm"
-            @click="toggleLeftDrawer"
-          />
-
-          <q-btn round flat>
-            <q-avatar>
-              <img :src="currentConversation.avatar" />
-            </q-avatar>
-          </q-btn>
-
-          <span class="q-subtitle-1 q-pl-md">
-            {{ currentConversation.person }}
-          </span>
-
-          <q-space />
-
-          <q-btn round flat icon="search" />
-          <q-btn round flat>
-            <q-icon name="attachment" class="rotate-135" />
-          </q-btn>
-          <q-btn round flat icon="more_vert">
-            <q-menu auto-close :offset="[110, 0]">
-              <q-list style="min-width: 150px">
-                <q-item clickable>
-                  <q-item-section>Contact data</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Block</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Select messages</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Silence</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Clear messages</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Erase messages</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-        </q-toolbar>
-      </q-header>
+      <me-header @toggle-left-drawer="toggleLeftDrawer"></me-header>
 
       <q-drawer v-model="leftDrawerOpen" show-if-above :breakpoint="690">
-        <q-toolbar class="bg-dark-0">
+        <q-toolbar>
           <q-avatar class="cursor-pointer">
             <img src="./clean-stream.svg" />
           </q-avatar>
@@ -97,7 +46,7 @@
           />
         </q-toolbar>
 
-        <q-toolbar class="bg-dark-0">
+        <q-toolbar>
           <q-input
             rounded
             outlined
@@ -112,7 +61,7 @@
           </q-input>
         </q-toolbar>
 
-        <q-scroll-area style="height: calc(100% - 100px)" class="bg-dark-0">
+        <q-scroll-area style="height: calc(100% - 100px)">
           <q-list>
             <q-item
               v-for="(conversation, index) in conversations"
@@ -148,12 +97,12 @@
         </q-scroll-area>
       </q-drawer>
 
-      <q-page-container class="bg-dark-0">
+      <q-page-container class="bg-dark">
         <router-view />
       </q-page-container>
 
       <q-footer>
-        <q-toolbar class="row bg-dark-2">
+        <q-toolbar class="row bg-dark-alt">
           <q-btn round flat icon="insert_emoticon" class="q-mr-sm" />
           <q-input
             rounded
@@ -173,6 +122,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { ref, computed } from 'vue';
+import MeHeader from 'src/components/MeHeader.vue';
 
 const conversations = [
   {
@@ -215,10 +165,6 @@ const leftDrawerOpen = ref(false);
 const search = ref('');
 const message = ref('');
 const currentConversationIndex = ref(0);
-
-const currentConversation = computed(() => {
-  return conversations[currentConversationIndex.value];
-});
 
 const style = computed(() => ({
   height: $q.screen.height + 'px',
@@ -263,11 +209,6 @@ function setCurrentConversation(index: number) {
     &__layout
       width: 100%
       border-radius: 0
-
-@media (min-width: 691px)
-  .WAL
-    &__drawer-open
-      display: none
 
 .conversation__summary
   margin-top: 4px

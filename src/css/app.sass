@@ -1,10 +1,10 @@
 // app global css in Sass form
 
-$darks: (0: #313d4ee0, 2: #36393fe0)
+$colors: ("dark-alt": #36393fe0)
 
-@each $idx, $color in $darks
-  .text-dark-#{$idx}
+@each $idx, $color in $colors
+  .text-#{$idx}
     color: $color !important
 
-  .bg-dark-#{$idx}
+  .bg-#{$idx}
     background: $color !important
