@@ -1,8 +1,8 @@
 {
-  "name": "clean-stream",
+  "name": "wave-streaming",
   "version": "0.0.1",
   "description": "A WebRTC based streaming client to share audio and video with your friends",
-  "productName": "Clean Stream",
+  "productName": "WΛVE",
   "author": "Daniel Mittereder <danielmittereder@gmail.com>",
   "private": true,
   "scripts": {
