@@ -5,10 +5,12 @@
 
       <q-drawer v-model="leftDrawerOpen" show-if-above :breakpoint="690">
         <q-toolbar>
-          <q-avatar class="cursor-pointer q-mr-sm">
-            <img src="./clean-stream.svg" />
-          </q-avatar>
-          <div class="text-h6" style="font-family: sans-serif">WΛVE</div>
+          <div
+            class="text-h6"
+            style="font-family: sans-serif; user-select: none"
+          >
+            WΛVE
+          </div>
 
           <q-space />
 
