@@ -84,5 +84,10 @@ module.exports = {
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+    /**
+     * My Rules
+     */
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
 };
