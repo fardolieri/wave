@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { csId } from 'src/utils/use-id.js';
+import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
-
-const avatarUrl = computed(
-  () => `https://robohash.org/${csId.value}.png?set=set4`
-);
 </script>
 
 <template>
@@ -22,7 +18,7 @@ const avatarUrl = computed(
 
       <q-btn round flat>
         <q-avatar>
-          <q-img :src="avatarUrl" />
+          <jdent-icon :hash="csId"></jdent-icon>
         </q-avatar>
       </q-btn>
 

@@ -75,9 +75,7 @@
             >
               <q-item-section avatar>
                 <q-avatar>
-                  <img
-                    :src="`https://robohash.org/${conversation.csId}.png?set=set4`"
-                  />
+                  <jdent-icon :hash="conversation.csId"></jdent-icon>
                 </q-avatar>
               </q-item-section>
 
@@ -127,8 +125,9 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { ref, computed } from 'vue';
+import JdentIcon from 'src/components/JdentIcon.vue';
 import MeHeader from 'src/components/MeHeader.vue';
+import { computed, ref } from 'vue';
 
 const conversations = [
   { csId: '08fb9637-05e4-4e21-9f73-28ab236b7071' },
