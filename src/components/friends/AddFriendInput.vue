@@ -1,0 +1,32 @@
+<template>
+  <q-input
+    rounded
+    outlined
+    dense
+    class="WAL__field full-width"
+    v-model="text"
+    placeholder="Paste your friend's peer ID"
+    @update:modelValue="onInput"
+  >
+    <template v-slot:prepend>
+      <q-icon name="person_add" style="margin-right: 2px" />
+    </template>
+  </q-input>
+</template>
+
+<script setup lang="ts">
+import { uuidRegex } from 'src/utils/use-id';
+import { ref } from 'vue';
+import { friendIds } from './friends';
+const text = ref('');
+
+function onInput(value: string | number | null): void {
+  const id = typeof value === 'string' ? uuidRegex.exec(value)?.[0] : undefined;
+  if (id) {
+    setTimeout(() => {
+      friendIds.value.add(id);
+      text.value = '';
+    }, 0);
+  }
+}
+</script>

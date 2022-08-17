@@ -50,18 +50,7 @@
         </q-toolbar>
 
         <q-toolbar>
-          <q-input
-            rounded
-            outlined
-            dense
-            class="WAL__field full-width"
-            v-model="search"
-            placeholder="Search or start a new conversation"
-          >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
+          <add-friend-input></add-friend-input>
         </q-toolbar>
 
         <q-scroll-area style="height: calc(100% - 100px)">
@@ -128,13 +117,12 @@ import { useQuasar } from 'quasar';
 import JdentIcon from 'src/components/JdentIcon.vue';
 import MeHeader from 'src/components/MeHeader.vue';
 import { computed, ref } from 'vue';
+import AddFriendInput from 'src/components/friends/AddFriendInput.vue';
+import { friendIds } from 'src/components/friends/friends';
 
-const conversations = [
-  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7071' },
-  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7072' },
-  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7073' },
-  { csId: '08fb9637-05e4-4e21-9f73-28ab236b7074' },
-];
+const conversations = computed(() =>
+  [...friendIds.value].map((x) => ({ csId: x })).reverse()
+);
 
 const $q = useQuasar();
 
