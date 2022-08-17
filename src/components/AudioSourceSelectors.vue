@@ -1,28 +1,58 @@
 <script setup lang="ts">
 import { useDevicesList } from '@vueuse/core';
-import { watchEffect } from 'vue';
-const { videoInputs: cameras, audioInputs: microphones } = useDevicesList({
-  requestPermissions: true,
-});
+import { ref, watch } from 'vue';
+const {
+  videoInputs: cameras,
+  audioInputs: microphones,
+  ensurePermissions,
+} = useDevicesList();
 
-watchEffect(() => console.log(microphones));
+const selectedCam = ref<InputDeviceInfo>();
+const selectedMic = ref<InputDeviceInfo>();
+
+watch(cameras, (cams) => {
+  selectedCam.value = cams.find((m) => m.deviceId === 'default');
+});
+watch(microphones, (mics) => {
+  selectedMic.value = mics.find((m) => m.deviceId === 'default');
+});
 </script>
 
 <template>
-  <div class="row text-center">
-    <div class="col-6">
-      <q-icon name="camera" />
-      <div>Camera ({{ cameras.length }})</div>
-      <div v-for="i of cameras" :key="i.deviceId">
-        {{ i.label }}
-      </div>
-    </div>
-    <div class="col-6">
+  <q-select
+    class="single-line-value-select"
+    v-model="selectedCam"
+    :options="cameras"
+    optionLabel="label"
+    optionValue="deviceId"
+    label="Videocam"
+    @focus="ensurePermissions"
+  >
+    <template v-slot:prepend>
+      <q-icon name="videocam" />
+    </template>
+  </q-select>
+  <q-select
+    class="single-line-value-select"
+    v-model="selectedMic"
+    :options="microphones"
+    optionLabel="label"
+    optionValue="deviceId"
+    label="Microphone"
+    @focus="ensurePermissions"
+  >
+    <template v-slot:prepend>
       <q-icon name="mic" />
-      <div>Microphones ({{ microphones.length }})</div>
-      <div v-for="i of microphones" :key="i.deviceId">
-        {{ i.label }}
-      </div>
-    </div>
-  </div>
+    </template>
+  </q-select>
 </template>
+
+<style lang="sass" scoped>
+.q-select
+  width: 200px
+
+  :deep(.q-field__native > span)
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+</style>
