@@ -9,7 +9,7 @@
     @update:modelValue="onInput"
   >
     <template v-slot:prepend>
-      <q-icon name="person_add" style="margin-right: 2px" />
+      <q-icon name="person_add" class="q-mr-xs" />
     </template>
   </q-input>
 </template>
