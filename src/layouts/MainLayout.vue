@@ -53,41 +53,7 @@
           <add-friend-input></add-friend-input>
         </q-toolbar>
 
-        <q-scroll-area style="height: calc(100% - 100px)">
-          <q-list>
-            <q-item
-              v-for="(conversation, index) in conversations"
-              :key="conversation.csId"
-              clickable
-              v-ripple
-              @click="setCurrentConversation(index)"
-            >
-              <q-item-section avatar>
-                <q-avatar>
-                  <jdent-icon :hash="conversation.csId"></jdent-icon>
-                </q-avatar>
-              </q-item-section>
-
-              <q-item-section>
-                <q-item-label
-                  lines="1"
-                  style="text-overflow: ellipsis; width: 5em"
-                >
-                  {{ conversation.csId }}
-                </q-item-label>
-                <q-item-label class="conversation__summary" caption>
-                  <q-icon name="check" />
-                  caption
-                </q-item-label>
-              </q-item-section>
-
-              <q-item-section side>
-                <q-item-label caption> 17:00 </q-item-label>
-                <q-icon name="keyboard_arrow_down" />
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
+        <friends-list></friends-list>
       </q-drawer>
 
       <q-page-container class="bg-dark">
@@ -114,22 +80,15 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import JdentIcon from 'src/components/JdentIcon.vue';
+import AddFriendInput from 'src/components/friends/AddFriendInput.vue';
+import FriendsList from 'src/components/friends/FriendList.vue';
 import MeHeader from 'src/components/MeHeader.vue';
 import { computed, ref } from 'vue';
-import AddFriendInput from 'src/components/friends/AddFriendInput.vue';
-import { friendIds } from 'src/components/friends/friends';
-
-const conversations = computed(() =>
-  [...friendIds.value].map((x) => ({ csId: x })).reverse()
-);
 
 const $q = useQuasar();
 
 const leftDrawerOpen = ref(false);
-const search = ref('');
 const message = ref('');
-const currentConversationIndex = ref(0);
 
 const style = computed(() => ({
   height: $q.screen.height + 'px',
@@ -137,10 +96,6 @@ const style = computed(() => ({
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
-}
-
-function setCurrentConversation(index: number) {
-  currentConversationIndex.value = index;
 }
 </script>
 

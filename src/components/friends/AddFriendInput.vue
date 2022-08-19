@@ -17,14 +17,14 @@
 <script setup lang="ts">
 import { uuidRegex } from 'src/utils/use-id';
 import { ref } from 'vue';
-import { friendIds } from './friends';
+import { addFriend } from './friends';
 const text = ref('');
 
 function onInput(value: string | number | null): void {
   const id = typeof value === 'string' ? uuidRegex.exec(value)?.[0] : undefined;
   if (id) {
     setTimeout(() => {
-      friendIds.value.add(id);
+      addFriend(id);
       text.value = '';
     }, 0);
   }
