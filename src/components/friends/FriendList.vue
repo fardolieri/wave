@@ -31,7 +31,10 @@
                 <q-item clickable>
                   <q-item-section>Edit Name</q-item-section>
                 </q-item>
-                <q-item clickable>
+                <q-item
+                  clickable
+                  @click="$navigator.clipboard.writeText(friend.id)"
+                >
                   <q-item-section>Copy peer ID</q-item-section>
                 </q-item>
                 <q-separator class="q-my-xs"></q-separator>

@@ -8,17 +8,11 @@ const friendIds = useLocalStorage('friend-list', new Set<string>(), {
   },
 });
 
-export const friends = computed(
-  () =>
-    [...friendIds.value].map((friendId) => ({
-      id: friendId,
-      highlight: highlighted.has(friendId),
-    })),
-  {
-    onTrigger(event) {
-      console.log('triggered', event);
-    },
-  }
+export const friends = computed(() =>
+  [...friendIds.value].map((friendId) => ({
+    id: friendId,
+    highlight: highlighted.has(friendId),
+  }))
 );
 
 export function addFriend(friendId: string): void {
