@@ -1,7 +1,10 @@
 <template>
   <div class="WAL position-relative" :style="style">
     <q-layout view="lHh Lpr lFf" class="WAL__layout shadow-3" container>
-      <me-header @toggle-left-drawer="toggleLeftDrawer"></me-header>
+      <me-header
+        @toggle-left-drawer="toggleLeftDrawer"
+        class="bg-dark-alt-2"
+      ></me-header>
 
       <q-drawer v-model="leftDrawerOpen" show-if-above :breakpoint="690">
         <q-toolbar>
@@ -56,7 +59,7 @@
         <friends-list></friends-list>
       </q-drawer>
 
-      <q-page-container class="bg-dark">
+      <q-page-container class="dark-transparent">
         <router-view />
       </q-page-container>
 
@@ -100,20 +103,22 @@ function toggleLeftDrawer() {
 </script>
 
 <style lang="sass">
+.dark-transparent
+  background-color: #303b4cd4
+
 .WAL
   width: 100%
   height: 100%
   padding-top: 20px
   padding-bottom: 20px
-  background-image: url("./background.svg") !important
-  background-size: cover
+  background: rgb(75,33,103)
+  background: linear-gradient(163deg, #315699 0%, #1a125c 50%, #652893 100%)
 
   &__layout
     margin: 0 auto
     z-index: 4000
     height: 100%
     width: 90%
-    max-width: 1400px
     border-radius: 5px
 
   &__field.q-field--outlined .q-field__control:before
@@ -130,10 +135,6 @@ function toggleLeftDrawer() {
       width: 100%
       border-radius: 0
 
-.conversation__summary
-  margin-top: 4px
-
-.conversation__more
-  margin-top: 0!important
-  font-size: 1.4rem
+.q-menu.q-dark
+  background-color: $dark-alt
 </style>

@@ -16,10 +16,23 @@ $primary   : #1f89db
 $secondary : #f42a8b
 $accent    : #9C27B0
 
-$dark      : #313d4ee0
+$dark      : #263348
 $dark-page : #121212
 
 $positive  : #21BA45
 $negative  : #C10015
 $info      : #31CCEC
 $warning   : #F2C037
+
+
+// Custom colors start here
+$dark-alt  : #334352
+$dark-alt-2: #2f465f
+
+$colors: ("dark-alt": $dark-alt, "dark-alt-2": $dark-alt-2)
+@each $idx, $color in $colors
+  .text-#{$idx}
+    color: $color !important
+
+  .bg-#{$idx}
+    background: $color !important

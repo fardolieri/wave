@@ -13,7 +13,7 @@ function copyId(): void {
 
 <template>
   <q-header elevated>
-    <q-toolbar class="bg-dark">
+    <q-toolbar>
       <q-btn
         round
         flat
