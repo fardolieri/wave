@@ -111,8 +111,6 @@ function toggleLeftDrawer() {
   height: 100%
   padding-top: 20px
   padding-bottom: 20px
-  background: rgb(75,33,103)
-  background: linear-gradient(163deg, #315699 0%, #1a125c 50%, #652893 100%)
 
   &__layout
     margin: 0 auto
