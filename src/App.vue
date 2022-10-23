@@ -1,22 +1,24 @@
 <template>
   <div class="background">
-    <transition-group
-      enter-active-class="animated fadeIn"
-      leave-active-class="animated fadeOut"
-    >
-      <InitialLoadingScreen v-if="!csId" />
-      <router-view v-else />
-    </transition-group>
+    <router-view v-if="csId"></router-view>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import InitialLoadingScreen from './components/InitialLoadingScreen.vue';
+import { useQuasar } from 'quasar';
+import AvatarPicker from './components/AvatarPicker.vue';
 import { csId } from './utils/use-id';
 
-const loading = ref(true);
-setTimeout(() => (loading.value = false), 1000);
+const $q = useQuasar();
+
+if (!csId.value) {
+  $q.dialog({
+    component: AvatarPicker,
+    componentProps: { persistent: true },
+  }).onOk((hash) => {
+    csId.value = hash;
+  });
+}
 </script>
 
 <style lang="sass">

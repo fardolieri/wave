@@ -1,5 +1,5 @@
 <template>
-  <svg ref="svgRef"></svg>
+  <svg class="jdent-icon" ref="svgRef"></svg>
 </template>
 
 <script setup lang="ts">
