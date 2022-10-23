@@ -8,7 +8,7 @@
         <q-item
           v-for="friend in reverseFriendList"
           :key="friend.id"
-          :class="{ highlight: friend.highlight }"
+          :class="{ 'animated pulse highlight': friend.highlight }"
         >
           <q-item-section avatar>
             <q-avatar>
@@ -61,6 +61,11 @@ const reverseFriendList = computed(() => [...friends.value].reverse());
 </script>
 
 <style lang="sass" scoped>
+.q-item
+  background-color: transparent
+  transition: background-color 2000ms ease-in-out
+
 .highlight
   background-color: #ffffff3d
+  transition: background-color 150ms ease-in-out
 </style>

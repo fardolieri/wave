@@ -18,7 +18,7 @@ export const friends = computed(() =>
 export function addFriend(friendId: string): void {
   friendIds.value.add(friendId);
   highlighted.add(friendId);
-  setTimeout(() => highlighted.delete(friendId), 1000);
+  setTimeout(() => highlighted.delete(friendId), 150);
 }
 
 export function removeFriend(friendId: string): void {
