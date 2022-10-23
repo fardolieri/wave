@@ -1,22 +1,22 @@
 <template>
   <div class="background">
-    <router-view v-if="csId"></router-view>
+    <router-view v-if="peerId"></router-view>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import AvatarPicker from './components/AvatarPicker.vue';
-import { csId } from './utils/use-id';
+import { peerId } from './utils/use-id';
 
 const $q = useQuasar();
 
-if (!csId.value) {
+if (!peerId.value) {
   $q.dialog({
     component: AvatarPicker,
     componentProps: { persistent: true },
   }).onOk((hash) => {
-    csId.value = hash;
+    peerId.value = hash;
   });
 }
 </script>

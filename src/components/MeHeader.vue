@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { csId } from 'src/utils/use-id.js';
+import { peerId } from 'src/utils/use-id.js';
 import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
 
 function copyId(): void {
-  navigator.clipboard.writeText(csId.value);
+  navigator.clipboard.writeText(peerId.value);
   const el = document.querySelector('.copy-id-tooltip div');
   el && (el.textContent += ' ✔');
 }
@@ -24,7 +24,7 @@ function copyId(): void {
 
       <q-btn round flat @click="copyId">
         <q-avatar>
-          <jdent-icon :hash="csId"></jdent-icon>
+          <jdent-icon :hash="peerId"></jdent-icon>
         </q-avatar>
         <q-tooltip class="copy-id-tooltip"
           ><div class="text-overline">Copy own ID</div></q-tooltip
@@ -32,7 +32,7 @@ function copyId(): void {
       </q-btn>
 
       <span class="q-subtitle-1 q-pl-md">
-        {{ csId }}
+        {{ peerId }}
       </span>
 
       <q-space />
