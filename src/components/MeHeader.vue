@@ -6,8 +6,6 @@ defineEmits<{ (e: 'toggle-left-drawer'): void }>();
 
 function copyId(): void {
   navigator.clipboard.writeText(peerId.value);
-  const el = document.querySelector('.copy-id-tooltip div');
-  el && (el.textContent += ' ✔');
 }
 </script>
 
@@ -22,45 +20,16 @@ function copyId(): void {
         @click="$emit('toggle-left-drawer')"
       />
 
-      <q-btn round flat @click="copyId">
+      <q-space />
+
+      <q-btn round flat>
         <q-avatar>
           <jdent-icon :hash="peerId"></jdent-icon>
         </q-avatar>
-        <q-tooltip class="copy-id-tooltip"
-          ><div class="text-overline">Copy own ID</div></q-tooltip
-        >
-      </q-btn>
-
-      <span class="q-subtitle-1 q-pl-md">
-        {{ peerId }}
-      </span>
-
-      <q-space />
-
-      <q-btn round flat icon="search" />
-      <q-btn round flat>
-        <q-icon name="attachment" class="rotate-135" />
-      </q-btn>
-      <q-btn round flat icon="more_vert">
-        <q-menu auto-close :offset="[110, 0]" class="bg-dark-0-">
+        <q-menu auto-close :offset="[110, 0]">
           <q-list style="min-width: 150px">
-            <q-item clickable>
-              <q-item-section>Contact data</q-item-section>
-            </q-item>
-            <q-item clickable>
-              <q-item-section>Block</q-item-section>
-            </q-item>
-            <q-item clickable>
-              <q-item-section>Select messages</q-item-section>
-            </q-item>
-            <q-item clickable>
-              <q-item-section>Silence</q-item-section>
-            </q-item>
-            <q-item clickable>
-              <q-item-section>Clear messages</q-item-section>
-            </q-item>
-            <q-item clickable>
-              <q-item-section>Erase messages</q-item-section>
+            <q-item clickable @click="copyId">
+              <q-item-section>Copy own ID</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
