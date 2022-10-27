@@ -10,8 +10,8 @@
       </q-card-section>
 
       <q-card-section>
-        <q-scroll-area style="height: 300px">
-          <q-infinite-scroll @load="loadMoreAvatars">
+        <q-scroll-area style="height: 300px" visible>
+          <q-infinite-scroll :offset="750" @load="loadMoreAvatars">
             <div class="icon-flex-container">
               <jdent-icon
                 v-for="hash in hashes"
