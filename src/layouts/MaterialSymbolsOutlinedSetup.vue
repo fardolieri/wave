@@ -11,6 +11,10 @@ const $q = useQuasar();
 $q.iconMapFn = (iconName) => ({ icon: `sym_o_${iconName}` });
 </script>
 
+<template>
+  <div></div>
+</template>
+
 <style>
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 48;
