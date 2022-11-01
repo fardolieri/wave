@@ -20,8 +20,11 @@
               {{ friend.id }}
             </q-item-label>
             <q-item-label class="conversation__summary" caption>
-              <q-icon name="check" />
-              caption
+              <span class="text-positive" v-if="friend.connection.open">
+                <q-icon name="check" color="positive" />
+                Connected
+              </span>
+              <span class="text-grey" v-else> Not connected </span>
             </q-item-label>
           </q-item-section>
           <q-item-section side>
@@ -39,9 +42,14 @@
                 </q-item>
                 <q-separator class="q-my-xs"></q-separator>
                 <q-item clickable>
-                  <q-item-section @click="removeFriend(friend.id)"
+                  <q-item-section @click="friend.remove()"
                     >Remove</q-item-section
                   >
+                </q-item>
+                <q-item>
+                  <q-item-section>{{
+                    friend.connection?.connectionId
+                  }}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -55,7 +63,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import JdentIcon from '../JdentIcon.vue';
-import { friends, removeFriend } from './friends';
+import { friends } from './friends';
 
 const reverseFriendList = computed(() => [...friends.value].reverse());
 </script>

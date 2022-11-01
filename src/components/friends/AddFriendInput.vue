@@ -6,7 +6,7 @@
     class="WAL__field full-width"
     v-model="text"
     placeholder="Paste your friend's peer ID"
-    @update:modelValue="onInput"
+    @update:modelValue="onInput($event as string)"
   >
     <template v-slot:prepend>
       <q-icon name="person_add" class="q-mr-xs" />
@@ -15,13 +15,17 @@
 </template>
 
 <script setup lang="ts">
-import { uuidRegex } from 'src/utils/use-id';
 import { ref } from 'vue';
 import { addFriend } from './friends';
+
 const text = ref('');
 
-function onInput(value: string | number | null): void {
-  const id = typeof value === 'string' ? uuidRegex.exec(value)?.[0] : undefined;
+function onInput(value: string): void {
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+  const id = uuidRegex.exec(value)?.[0];
+
   if (id) {
     setTimeout(() => {
       addFriend(id);

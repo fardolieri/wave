@@ -12,7 +12,7 @@ $q.iconMapFn = (iconName) => ({ icon: `sym_o_${iconName}` });
 </script>
 
 <template>
-  <div></div>
+  <slot></slot>
 </template>
 
 <style>
