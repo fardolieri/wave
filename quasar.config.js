@@ -61,7 +61,7 @@ module.exports = configure(function (/* ctx */) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      publicPath: '/wave', // for github pages
+      publicPath: process.env.PUBLIC_PATH,
       // analyze: true,
       env: {
         COMMIT_HASH: require('child_process')
