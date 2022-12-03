@@ -5,7 +5,13 @@ import { ref } from 'vue';
 import AvatarPicker from '../components/AvatarPicker.vue';
 
 export const peerId = useLocalStorage<string>('id', null);
-peerId.value ??= await forceUserToSelectPeerId();
+export const username = useLocalStorage<string>('username', '');
+
+if (!peerId.value) {
+  const userInput = await forceUserToSelectPeerId();
+  peerId.value = userInput.hash;
+  username.value = userInput.username;
+}
 
 export const peerIsLoading = ref(true);
 export const peerIsReady = ref(false);
@@ -23,13 +29,16 @@ peer.value.on('disconnected', () => {
   peer.value.reconnect();
 });
 
-async function forceUserToSelectPeerId(): Promise<string> {
+async function forceUserToSelectPeerId(): Promise<{
+  hash: string;
+  username: string;
+}> {
   return await new Promise((resolve) => {
     Dialog.create({
       component: AvatarPicker,
       componentProps: { persistent: true },
-    }).onOk((hash: string) => {
-      resolve(hash);
+    }).onOk((userInput) => {
+      resolve(userInput);
     });
   });
 }

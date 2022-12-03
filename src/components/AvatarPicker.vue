@@ -2,11 +2,20 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card style="width: 700px; max-width: 650px; max-height: 90vh">
       <q-card-section>
-        <div class="text-h6">Chose your avatar</div>
+        <div class="text-h6">Chose your Username and Avatar</div>
         <div class="text-caption">
-          Your avatar is coupled to your peer ID so it cannot be changed without
-          reseting your friend's list.
+          Your avatar is coupled to your peer ID so it cannot be changed later.
         </div>
+      </q-card-section>
+
+      <q-card-section>
+        <q-input
+          outlined
+          ref="usernameRef"
+          v-model="username"
+          label="Username"
+          :autofocus="true"
+        ></q-input>
       </q-card-section>
 
       <q-card-section>
@@ -17,7 +26,7 @@
                 v-for="hash in hashes"
                 :hash="hash"
                 :key="hash"
-                @click="onDialogOK(hash)"
+                @click="onAvatarClick(hash)"
               ></jdent-icon>
             </div>
             <template v-slot:loading>
@@ -33,15 +42,20 @@
 </template>
 
 <script setup lang="ts">
+import type { QInput } from 'quasar';
+import { useDialogPluginComponent } from 'quasar';
+import { animateElement } from 'src/utils/animate-element';
+import { v4 as uuid } from 'uuid';
 import { ref } from 'vue';
 import JdentIcon from './JdentIcon.vue';
-import { v4 as uuid } from 'uuid';
-import { useDialogPluginComponent } from 'quasar';
 
 const { dialogRef, onDialogOK, onDialogHide } = useDialogPluginComponent();
 defineEmits({ ...useDialogPluginComponent.emitsObject });
 
 const hashes = ref(newHashes(24));
+
+const usernameRef = ref<QInput>();
+const username = ref('');
 
 function newHashes(n: number): string[] {
   return [...Array(n)].map(() => uuid());
@@ -51,6 +65,15 @@ const loadMoreAvatars = (index: number, done: () => void) => {
   hashes.value.push(...newHashes(12));
   done();
 };
+
+async function onAvatarClick(hash: string): Promise<void> {
+  if (!username.value) {
+    animateElement(usernameRef.value!.$el, 'pulse', 'fast');
+    return;
+  }
+
+  onDialogOK({ hash, username: username.value });
+}
 </script>
 
 <style lang="sass" scoped>
