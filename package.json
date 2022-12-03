@@ -9,6 +9,7 @@
     "dev": "quasar dev --mode pwa",
     "ngrok": "ngrok http https://localhost:9200/",
     "build": "quasar build --mode pwa",
+    "deploy": "quasar build --mode pwa && gh-pages --dist dist/pwa",
     "serve": "quasar serve --https --cert=cert/cert.pem --key=cert/key.pem dist/pwa https://localhost:4000",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore",
