@@ -1,1 +1,0 @@
-import{ad as a}from"./index.ad6519c1.js";const e=a();async function i(){e.value=await navigator.mediaDevices.getDisplayMedia({audio:!0,video:{frameRate:144}}),console.log(e.value.getVideoTracks()[0].getSettings())}export{e as m,i as r};
