@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { debouncedRef } from '@vueuse/shared';
+import { copyToClipboard } from 'src/utils/copy-to-clipboard';
 import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
 import { peerId, peerIsLoading } from 'src/utils/peer';
 import JdentIcon from './JdentIcon.vue';
@@ -8,10 +9,6 @@ defineEmits<{ (e: 'toggle-left-drawer'): void }>();
 
 // Debounced so it doesn't flicker which would result in a bad UX
 const debouncedLoadingIndicator = debouncedRef(peerIsLoading, 500);
-
-function copyId(): void {
-  navigator.clipboard.writeText(peerId.value);
-}
 </script>
 
 <template>
@@ -55,7 +52,7 @@ function copyId(): void {
         ></q-spinner-oval>
         <q-menu auto-close :offset="[110, 0]">
           <q-list style="min-width: 150px">
-            <q-item clickable @click="copyId">
+            <q-item clickable @click="copyToClipboard(peerId)">
               <q-item-section>Copy own peer ID</q-item-section>
             </q-item>
           </q-list>
