@@ -63,7 +63,11 @@ module.exports = configure(function (/* ctx */) {
 
       publicPath: '/wave', // for github pages
       // analyze: true,
-      // env: {},
+      env: {
+        COMMIT_HASH: require('child_process')
+          .execSync('git rev-parse HEAD')
+          .toString(),
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

@@ -9,6 +9,8 @@ defineEmits<{ (e: 'toggle-left-drawer'): void }>();
 
 // Debounced so it doesn't flicker which would result in a bad UX
 const debouncedLoadingIndicator = debouncedRef(peerIsLoading, 500);
+
+const commitHash = process.env.COMMIT_HASH;
 </script>
 
 <template>
@@ -55,6 +57,18 @@ const debouncedLoadingIndicator = debouncedRef(peerIsLoading, 500);
             <q-item clickable @click="copyToClipboard(peerId)">
               <q-item-section>Copy own peer ID</q-item-section>
             </q-item>
+            <q-item
+              v-if="commitHash"
+              clickable
+              @click="copyToClipboard(commitHash!)"
+            >
+              <q-item-section style="width: 200px">
+                <q-item-label>Commit</q-item-label>
+                <q-item-label caption class="ellipsis">{{
+                  commitHash
+                }}</q-item-label>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </q-btn>
@@ -67,4 +81,9 @@ const debouncedLoadingIndicator = debouncedRef(peerIsLoading, 500);
   .WAL
     &__drawer-open
       display: none
+
+.ellipsis
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
 </style>
