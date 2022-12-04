@@ -53,7 +53,7 @@ const commitHash = process.env.COMMIT_HASH;
           style="position: absolute; opacity: 0.5"
         ></q-spinner-oval>
         <q-menu auto-close :offset="[110, 0]">
-          <q-list style="min-width: 150px">
+          <q-list separator style="min-width: 150px">
             <q-item clickable @click="copyToClipboard(peerId)">
               <q-item-section>Copy own peer ID</q-item-section>
             </q-item>
