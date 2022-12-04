@@ -4,17 +4,20 @@ export function animateElement(
   element: Element,
   animation: generalAnimations,
   speed?: 'slow' | 'slower' | 'fast' | 'faster'
-): void {
-  const animationClasses = ['animated', animation];
-  if (speed) animationClasses.push(speed);
+): Promise<void> {
+  return new Promise((resolve) => {
+    const animationClasses = ['animated', animation];
+    if (speed) animationClasses.push(speed);
 
-  element.classList.add(...animationClasses);
+    element.classList.add(...animationClasses);
 
-  element.addEventListener(
-    'animationend',
-    () => {
-      element.classList.remove(...animationClasses);
-    },
-    { once: true }
-  );
+    element.addEventListener(
+      'animationend',
+      () => {
+        element.classList.remove(...animationClasses);
+        resolve();
+      },
+      { once: true }
+    );
+  });
 }
