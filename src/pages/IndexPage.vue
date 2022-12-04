@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md row">
+  <q-page class="q-pa-md row relative">
     <VideoSurface></VideoSurface>
   </q-page>
 </template>

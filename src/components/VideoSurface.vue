@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { mediaStream } from 'src/utils/media-stream';
+import DraggableWithBounding from 'src/utils/renderless-components/DraggableWithBounding.vue';
 import { onMounted, ref, watch } from 'vue';
 
 const videoRef = ref<HTMLVideoElement>();
@@ -14,16 +15,19 @@ function trySettingSrcObject(): void {
 </script>
 
 <template>
-  <div class="video-container shadow-3">
-    <div v-show="!mediaStream" class="video-skeleton"></div>
-    <video v-show="mediaStream" ref="videoRef" autoplay></video>
-  </div>
+  <DraggableWithBounding :padding="5">
+    <div class="video-container shadow-3">
+      <div v-show="!mediaStream" class="video-skeleton"></div>
+      <video v-show="mediaStream" ref="videoRef" autoplay></video>
+    </div>
+  </DraggableWithBounding>
 </template>
 
 <style scoped lang="sass">
 .video-container
   align-self: flex-start
   display: flex
+  cursor: move
 
 video, .video-skeleton
   width: 300px
