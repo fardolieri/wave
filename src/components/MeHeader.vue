@@ -55,7 +55,18 @@ const commitHash = process.env.COMMIT_HASH;
         <q-menu auto-close :offset="[110, 0]">
           <q-list separator style="min-width: 150px">
             <q-item clickable @click="copyToClipboard(peerId)">
-              <q-item-section>Copy own peer ID</q-item-section>
+              <q-item-section>
+                <q-item-label>Copy own peer ID </q-item-label>
+              </q-item-section>
+              <q-tooltip
+                :delay="700"
+                anchor="center left"
+                self="center right"
+                transition-show="jump-left"
+                transition-hide="jump-right"
+                class="monospace"
+                >{{ peerId }}</q-tooltip
+              >
             </q-item>
             <q-item
               v-if="commitHash"
@@ -64,7 +75,7 @@ const commitHash = process.env.COMMIT_HASH;
             >
               <q-item-section style="width: 200px">
                 <q-item-label>Commit</q-item-label>
-                <q-item-label caption class="ellipsis">{{
+                <q-item-label caption class="ellipsis text-grey">{{
                   commitHash
                 }}</q-item-label>
               </q-item-section>
