@@ -1,49 +1,104 @@
-import { useLocalStorage } from '@vueuse/core';
-import { DataConnection } from 'peerjs';
-import { peer } from 'src/utils/peer';
-import { ref } from 'vue';
+import type { DataConnection } from 'peerjs';
+import { Notify } from 'quasar';
+import { peer, username as myUsername } from 'src/utils/peer';
+import { reactive, ref, toRaw, watch } from 'vue';
 
-class Friend {
+export class Friend {
   highlight = false;
-  connection: DataConnection;
+  reactiveStatus = reactive({ open: false });
 
-  constructor(readonly id: string) {
-    this.connection = peer.value!.connect(id);
+  constructor(
+    public readonly id: string,
+    public status:
+      | 'incoming friend request'
+      | 'outgoing friend request'
+      | 'friends',
+    public username: string | undefined = undefined,
+    public connection = toRaw(
+      peer.value.connect(id, {
+        metadata: { username: myUsername.value },
+      }),
+    ),
+  ) {
+    notifyConnection(this.connection, this.username ?? this.id);
+    this.connection.on('open', () => (this.reactiveStatus.open = true));
+    this.connection.on('close', () => (this.reactiveStatus.open = false));
   }
 
   remove(): void {
-    const position = friends.value.findIndex((friend) => friend.id === this.id);
-    friendIds.value.delete(this.id);
-    friends.value.splice(position, 1);
+    this.connection.close();
+    friends.value = friends.value.filter((friend) => friend.id !== this.id);
   }
 }
 
-export function addFriend(friendId: string): void {
-  const friendFound = friends.value.find((friend) => friend.id === friendId);
+export const friends = ref(getFriendsFromStorage());
 
-  if (friendFound) {
-    friendFound.highlight = true;
-    setTimeout(() => (friendFound.highlight = false), 150);
+watch(friends, updateFriendStorage, { deep: true });
+
+peer.value.on('connection', (connection) => {
+  const friend = friends.value.find((x) => x.id === connection.peer);
+  notifyConnection(connection, friend?.username ?? connection.peer);
+
+  if (!friend) {
+    connection.close();
+    friends.value = [
+      ...friends.value,
+      new Friend(
+        connection.peer,
+        'incoming friend request',
+        connection.metadata?.username,
+        connection,
+      ),
+    ];
     return;
   }
 
-  friendIds.value.add(friendId);
-  friends.value.push(new Friend(friendId));
-}
-
-const friendIds = useLocalStorage('friend-list', new Set<string>(), {
-  serializer: {
-    read: (rawArr: string) => new Set(JSON.parse(rawArr)),
-    write: (set: Set<string>) => JSON.stringify([...set]),
-  },
-});
-
-export const friends = ref<Friend[]>([]); // TODO fix this not truly deep reactive shizzle
-
-friends.value = [...friendIds.value].map((id) => new Friend(id));
-peer.value!.on('connection', (connection) => {
-  const friend = friends.value.find((x) => x.id === connection.peer);
-  if (!friend) return; // TODO send friend request
+  if (friend.status === 'outgoing friend request') {
+    friend.status = 'friends'; // 🤗
+  }
 
   friend.connection = connection;
+  friend.reactiveStatus.open = true;
+  friend.connection.on('open', () => (friend.reactiveStatus.open = true));
+  friend.connection.on('close', () => (friend.reactiveStatus.open = false));
 });
+
+type StoredFriendProps = Pick<Friend, 'id' | 'status' | 'username'>;
+
+function getFriendsFromStorage(): Friend[] {
+  const raw = localStorage.getItem('friend-list') ?? '[]';
+  const storedProps: StoredFriendProps[] = JSON.parse(raw);
+  return storedProps.map(
+    ({ id, status, username }) => new Friend(id, status, username),
+  );
+}
+
+function updateFriendStorage(): void {
+  const storedProps: StoredFriendProps[] = friends.value.map(
+    ({ id, status, username }) => ({ id, status, username }),
+  );
+  const raw = JSON.stringify(storedProps);
+  localStorage.setItem('friend-list', raw);
+}
+
+function notifyConnection(connection: DataConnection, username: string): void {
+  connection.on('open', () => {
+    Notify.create(`Connected to ${username}`);
+  });
+  connection.on('data', (data) => {
+    Notify.create(
+      `Data received from ${username}:\n${JSON.stringify(data, null, 2)}`,
+    );
+  });
+  connection.on('close', () => {
+    Notify.create(`Connection to ${username} closed.`);
+  });
+  connection.on('error', (error) => {
+    Notify.create(
+      `An error occured while connecting to ${username}:\n${error}`,
+    );
+  });
+  connection.on('iceStateChanged', (state) => {
+    Notify.create(`iceStateChanged of ${username} changed:\n${state}`);
+  });
+}

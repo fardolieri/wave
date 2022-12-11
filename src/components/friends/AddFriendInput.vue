@@ -16,9 +16,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { addFriend } from './friends';
+import { Friend, friends } from './friends';
 
 const text = ref('');
+
+function clearText(): void {
+  setTimeout(() => {
+    text.value = '';
+  }, 0);
+}
 
 function onInput(value: string): void {
   const uuidRegex =
@@ -27,10 +33,19 @@ function onInput(value: string): void {
   const id = uuidRegex.exec(value)?.[0];
 
   if (id) {
-    setTimeout(() => {
-      addFriend(id);
-      text.value = '';
-    }, 0);
+    clearText();
+    const friendFound = friends.value.find((friend) => friend.id === id);
+
+    if (friendFound) {
+      friendFound.highlight = true;
+      setTimeout(() => (friendFound.highlight = false), 150);
+      return;
+    }
+
+    friends.value = [
+      ...friends.value,
+      new Friend(id, 'outgoing friend request'),
+    ];
   }
 }
 </script>
