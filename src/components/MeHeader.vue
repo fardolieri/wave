@@ -2,7 +2,7 @@
 import { debouncedRef } from '@vueuse/shared';
 import { copyToClipboard } from 'src/utils/copy-to-clipboard';
 import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
-import { peerId, peerIsLoading } from 'src/utils/peer';
+import { peerId, peerIsLoading, username } from 'src/utils/peer';
 import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
@@ -43,6 +43,7 @@ const commitHash = process.env.COMMIT_HASH;
 
       <q-space />
 
+      <div class="text-subtitle1 q-mr-sm user-select-none">{{ username }}</div>
       <q-btn round flat>
         <q-avatar>
           <jdent-icon :hash="peerId"></jdent-icon>
