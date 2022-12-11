@@ -14,7 +14,9 @@
           ref="usernameRef"
           v-model="username"
           label="Username"
+          class="lighter-negative"
           :autofocus="true"
+          :rules="[Boolean]"
         ></q-input>
       </q-card-section>
 
@@ -39,9 +41,8 @@
 <script setup lang="ts">
 import type { QInput } from 'quasar';
 import { useDialogPluginComponent } from 'quasar';
-import { animateElement } from 'src/utils/animate-element';
 import { v4 as uuid } from 'uuid';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import JdentIcon from './JdentIcon.vue';
 
 const { dialogRef, onDialogOK, onDialogHide } = useDialogPluginComponent();
@@ -62,9 +63,11 @@ const loadMoreAvatars = (index: number, done: () => void) => {
 };
 
 async function onAvatarClick(hash: string): Promise<void> {
-  if (!username.value) {
-    await animateElement(usernameRef.value!.$el, 'pulse', 'fast');
-    usernameRef.value!.focus();
+  usernameRef.value?.resetValidation();
+  await nextTick();
+  const succesfulValidation = await usernameRef.value?.validate();
+  if (!succesfulValidation) {
+    usernameRef.value?.focus();
     return;
   }
 
