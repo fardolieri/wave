@@ -17,11 +17,15 @@ export const peerIsLoading = ref(true);
 export const peerIsReady = ref(false);
 
 export const peer = ref(
-  new Peer(peerId.value, { debug: import.meta.env.DEV ? 3 : 0 })
+  new Peer(peerId.value, { debug: import.meta.env.DEV ? 3 : 0 }),
 );
-peer.value.on('open', () => {
-  peerIsLoading.value = false;
-  peerIsReady.value = true;
+
+await new Promise<void>((resolve) => {
+  peer.value.on('open', () => {
+    peerIsLoading.value = false;
+    peerIsReady.value = true;
+    resolve();
+  });
 });
 
 peer.value.on('disconnected', () => {
