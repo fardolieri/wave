@@ -55,6 +55,7 @@ peer.value.on('connection', (connection) => {
 
   if (friend.status === 'outgoing friend request') {
     friend.status = 'friends'; // 🤗
+    friend.username = connection.metadata.username;
   }
 
   friend.connection = connection;
