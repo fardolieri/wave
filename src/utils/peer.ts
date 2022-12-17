@@ -1,49 +1,35 @@
 import { useLocalStorage } from '@vueuse/core';
 import Peer from 'peerjs';
 import { Dialog } from 'quasar';
-import { ref } from 'vue';
 import AvatarPicker from '../components/AvatarPicker.vue';
 
-export const peerId = useLocalStorage<string>('id', null);
+export const peerId = useLocalStorage<string>('peerId', null);
 export const username = useLocalStorage<string>('username', '');
 
 if (!peerId.value) {
   const userInput = await forceUserToSelectPeerId();
-  peerId.value = userInput.hash;
+  peerId.value = userInput.peerId;
   username.value = userInput.username;
 }
 
-export const peerIsLoading = ref(true);
-export const peerIsReady = ref(false);
-
-export const peer = ref(
-  new Peer(peerId.value, { debug: import.meta.env.DEV ? 3 : 0 }),
-);
-
-await new Promise<void>((resolve) => {
-  peer.value.on('open', () => {
-    peerIsLoading.value = false;
-    peerIsReady.value = true;
-    resolve();
-  });
+export const peer = new Peer(peerId.value, {
+  debug: import.meta.env.DEV ? 3 : 0,
+  secure: true,
 });
 
-peer.value.on('disconnected', () => {
-  peerIsLoading.value = true;
-  peerIsReady.value = false;
-  peer.value.reconnect();
+await new Promise<unknown>((resolve, reject) => {
+  peer.once('open', resolve);
+  peer.once('error', reject);
 });
 
 async function forceUserToSelectPeerId(): Promise<{
-  hash: string;
+  peerId: string;
   username: string;
 }> {
   return await new Promise((resolve) => {
     Dialog.create({
       component: AvatarPicker,
       componentProps: { persistent: true },
-    }).onOk((userInput) => {
-      resolve(userInput);
-    });
+    }).onOk(resolve);
   });
 }

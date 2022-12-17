@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { debouncedRef } from '@vueuse/shared';
 import { copyToClipboard } from 'src/utils/copy-to-clipboard';
 import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
-import { peerId, peerIsLoading, username } from 'src/utils/peer';
+import { peerId, username } from 'src/utils/peer';
 import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
-
-// Debounced so it doesn't flicker which would result in a bad UX
-const debouncedLoadingIndicator = debouncedRef(peerIsLoading, 500);
 
 const commitHash = process.env.COMMIT_HASH;
 </script>
@@ -48,11 +44,6 @@ const commitHash = process.env.COMMIT_HASH;
         <q-avatar>
           <jdent-icon :hash="peerId"></jdent-icon>
         </q-avatar>
-        <q-spinner-oval
-          v-if="debouncedLoadingIndicator"
-          size="2em"
-          style="position: absolute; opacity: 0.5"
-        ></q-spinner-oval>
         <q-menu auto-close :offset="[110, 0]">
           <q-list separator style="min-width: 150px">
             <q-item clickable @click="copyToClipboard(peerId)">

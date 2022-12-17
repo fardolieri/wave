@@ -15,7 +15,7 @@ export class Friend {
       | 'friends',
     public username: string | undefined = undefined,
     public connection = toRaw(
-      peer.value.connect(id, {
+      peer.connect(id, {
         metadata: { username: myUsername.value },
       }),
     ),
@@ -35,7 +35,7 @@ export const friends = ref(getFriendsFromStorage());
 
 watch(friends, updateFriendStorage, { deep: true });
 
-peer.value.on('connection', (connection) => {
+peer.on('connection', (connection) => {
   const friend = friends.value.find((x) => x.id === connection.peer);
   notifyConnection(connection, friend?.username ?? connection.peer);
 

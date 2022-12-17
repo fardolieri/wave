@@ -71,7 +71,7 @@ async function onAvatarClick(hash: string): Promise<void> {
     return;
   }
 
-  onDialogOK({ hash, username: username.value });
+  onDialogOK({ peerId: hash, username: username.value });
 }
 </script>
 
