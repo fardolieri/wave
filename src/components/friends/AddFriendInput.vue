@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Friend, friends } from './friends';
+import { Contact, contacts } from './friends';
 
 const text = ref('');
 
@@ -34,17 +34,17 @@ function onInput(value: string): void {
 
   if (id) {
     clearText();
-    const friendFound = friends.value.find((friend) => friend.id === id);
+    const contactFound = contacts.value.find((friend) => friend.id === id);
 
-    if (friendFound) {
-      friendFound.highlight = true;
-      setTimeout(() => (friendFound.highlight = false), 150);
+    if (contactFound) {
+      contactFound.reactive.highlight = true;
+      setTimeout(() => (contactFound.reactive.highlight = false), 150);
       return;
     }
 
-    friends.value = [
-      ...friends.value,
-      new Friend(id, 'outgoing friend request'),
+    contacts.value = [
+      new Contact(id, 'outgoing friend request'),
+      ...contacts.value,
     ];
   }
 }

@@ -1,105 +1,149 @@
 import type { DataConnection } from 'peerjs';
-import { Notify } from 'quasar';
 import { peer, username as myUsername } from 'src/utils/peer';
+import { Unreliable } from 'src/utils/utility-types';
 import { reactive, ref, toRaw, watch } from 'vue';
 
-export class Friend {
-  highlight = false;
-  reactiveStatus = reactive({ open: false });
+type ContactStatus =
+  | 'incoming friend request'
+  | 'outgoing friend request'
+  | 'friend'
+  | 'ignore';
+
+export class Contact {
+  reactive = reactive({
+    connected: false,
+    highlight: false,
+    status: 'ignore' as ContactStatus,
+    username: undefined as string | undefined,
+  });
+
+  private _connection?: DataConnection;
+
+  get connection() {
+    return this._connection;
+  }
+
+  set connection(value) {
+    this._connection = toRaw(value);
+
+    this._connection?.on('open', () => {
+      this.reactive.connected = true;
+    });
+
+    this._connection?.on('close', () => {
+      this.reactive.connected = false;
+    });
+
+    this._connection?.on('iceStateChanged', (state) => {
+      if (state === 'disconnected') this.reactive.connected = false;
+    });
+
+    this._connection?.on('data', (_data) => {
+      const data = _data as Unreliable<Greetings>;
+      if (data?.message === 'Hello my friend') {
+        this.reactive.status = 'friend';
+        this.reactive.username = data?.username ?? undefined;
+      }
+    });
+  }
 
   constructor(
     public readonly id: string,
-    public status:
-      | 'incoming friend request'
-      | 'outgoing friend request'
-      | 'friends',
-    public username: string | undefined = undefined,
-    public connection = toRaw(
-      peer.connect(id, {
-        metadata: { username: myUsername.value },
-      }),
-    ),
+    status: ContactStatus,
+    username: string | undefined = undefined,
   ) {
-    notifyConnection(this.connection, this.username ?? this.id);
-    this.connection.on('open', () => (this.reactiveStatus.open = true));
-    this.connection.on('close', () => (this.reactiveStatus.open = false));
+    this.reactive.status = status;
+    this.reactive.username = username;
+
+    if (
+      this.reactive.status === 'friend' ||
+      this.reactive.status === 'outgoing friend request'
+    )
+      this.connection = this.connect();
   }
 
   remove(): void {
-    this.connection.close();
-    friends.value = friends.value.filter((friend) => friend.id !== this.id);
+    this.connection?.close();
+    contacts.value = contacts.value.filter((friend) => friend.id !== this.id);
+  }
+
+  acceptFriendRequest(): void {
+    this.reactive.status = 'friend';
+    this.connection = this.connect();
+  }
+
+  private connect(): DataConnection {
+    return peer.connect(this.id, { metadata: { username: myUsername.value } });
   }
 }
 
-export const friends = ref(getFriendsFromStorage());
+export const contacts = ref(getContactsFromStorage());
 
-watch(friends, updateFriendStorage, { deep: true });
+watch(contacts, updateContactStorage, { deep: true });
 
 peer.on('connection', (connection) => {
-  const friend = friends.value.find((x) => x.id === connection.peer);
-  notifyConnection(connection, friend?.username ?? connection.peer);
+  const foundContact = contacts.value.find((x) => x.id === connection.peer);
 
-  if (!friend) {
-    connection.close();
-    friends.value = [
-      ...friends.value,
-      new Friend(
-        connection.peer,
-        'incoming friend request',
-        connection.metadata?.username,
-        connection,
-      ),
-    ];
+  if (foundContact?.reactive.status === 'outgoing friend request') {
+    foundContact.reactive.status = 'friend'; // 🤗
+    foundContact.reactive.username = connection.metadata.username;
+    greet(connection);
+  }
+
+  if (foundContact?.reactive.status === 'friend') {
+    foundContact.connection = connection;
+    foundContact.reactive.connected = true;
+    greet(connection);
     return;
   }
 
-  if (friend.status === 'outgoing friend request') {
-    friend.status = 'friends'; // 🤗
-    friend.username = connection.metadata.username;
-  }
+  // 'incoming friend request', 'ignore' or "never heard of"
+  connection.close();
 
-  friend.connection = connection;
-  friend.reactiveStatus.open = true;
-  friend.connection.on('open', () => (friend.reactiveStatus.open = true));
-  friend.connection.on('close', () => (friend.reactiveStatus.open = false));
+  if (!foundContact) {
+    contacts.value = [
+      new Contact(
+        connection.peer,
+        'incoming friend request',
+        connection.metadata.username,
+      ),
+      ...contacts.value,
+    ];
+    return;
+  }
 });
 
-type StoredFriendProps = Pick<Friend, 'id' | 'status' | 'username'>;
+type Greetings = { message: 'Hello my friend'; username: string };
+function greet(connection: DataConnection): void {
+  setTimeout(() => {
+    const greetings: Greetings = {
+      message: 'Hello my friend',
+      username: myUsername.value,
+    };
+    connection!.send(greetings);
+  }, 500);
+}
 
-function getFriendsFromStorage(): Friend[] {
-  const raw = localStorage.getItem('friend-list') ?? '[]';
-  const storedProps: StoredFriendProps[] = JSON.parse(raw);
+type StoredContactProps = {
+  id: string;
+  status: ContactStatus;
+  username: string | undefined;
+};
+
+function getContactsFromStorage(): Contact[] {
+  const raw = localStorage.getItem('contacts') ?? '[]';
+  const storedProps: StoredContactProps[] = JSON.parse(raw);
   return storedProps.map(
-    ({ id, status, username }) => new Friend(id, status, username),
+    ({ id, status, username }) => new Contact(id, status, username),
   );
 }
 
-function updateFriendStorage(): void {
-  const storedProps: StoredFriendProps[] = friends.value.map(
-    ({ id, status, username }) => ({ id, status, username }),
-  );
+function updateContactStorage(): void {
+  const storedProps: StoredContactProps[] = contacts.value.map((contact) => ({
+    id: contact.id,
+    status: contact.reactive.status,
+    username: contact.reactive.username,
+  }));
   const raw = JSON.stringify(storedProps);
-  localStorage.setItem('friend-list', raw);
-}
-
-function notifyConnection(connection: DataConnection, username: string): void {
-  connection.on('open', () => {
-    Notify.create(`Connected to ${username}`);
-  });
-  connection.on('data', (data) => {
-    Notify.create(
-      `Data received from ${username}:\n${JSON.stringify(data, null, 2)}`,
-    );
-  });
-  connection.on('close', () => {
-    Notify.create(`Connection to ${username} closed.`);
-  });
-  connection.on('error', (error) => {
-    Notify.create(
-      `An error occured while connecting to ${username}:\n${error}`,
-    );
-  });
-  connection.on('iceStateChanged', (state) => {
-    Notify.create(`iceStateChanged of ${username} changed:\n${state}`);
-  });
+  localStorage.setItem('contacts', raw);
 }
