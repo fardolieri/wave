@@ -21,16 +21,20 @@
       </q-card-section>
 
       <q-card-section class="q-pt-sm">
-        <q-scroll-area style="height: 330px" visible class="scroll-blur">
+        <q-scroll-area style="height: 340px" visible class="scroll-blur">
           <q-infinite-scroll :offset="750" @load="loadMoreAvatars">
             <div class="icon-flex-container">
               <jdent-icon
-                v-for="hash in hashes"
-                :hash="hash"
-                :key="hash"
-                @click="onAvatarClick(hash)"
+                v-for="key in keys"
+                :key="key.serializedPublicKey"
+                :hash="key.serializedPublicKey"
+                @click="onAvatarClick(key)"
               ></jdent-icon>
             </div>
+            <template v-slot:loading>
+              <div class="row justify-center">
+                <q-spinner-dots color="primary" size="lg" /></div
+            ></template>
           </q-infinite-scroll>
         </q-scroll-area>
       </q-card-section>
@@ -41,28 +45,30 @@
 <script setup lang="ts">
 import type { QInput } from 'quasar';
 import { useDialogPluginComponent } from 'quasar';
-import { v4 as uuid } from 'uuid';
+import type { Key } from 'src/utils/key';
+import { newKeyPair } from 'src/utils/key';
 import { nextTick, ref } from 'vue';
 import JdentIcon from './JdentIcon.vue';
 
 const { dialogRef, onDialogOK, onDialogHide } = useDialogPluginComponent();
 defineEmits({ ...useDialogPluginComponent.emitsObject });
 
-const hashes = ref(newHashes(24));
+const keys = ref<Key[]>([]);
 
 const usernameRef = ref<QInput>();
 const username = ref('');
 
-function newHashes(n: number): string[] {
-  return [...Array(n)].map(() => uuid());
+function newKeys(n: number): Promise<Key[]> {
+  return Promise.all([...Array(n)].map(newKeyPair));
 }
 
-const loadMoreAvatars = (index: number, done: () => void) => {
-  hashes.value.push(...newHashes(12));
+const loadMoreAvatars = async (index: number, done: () => void) => {
+  const newPairs = await newKeys(12);
+  keys.value.push(...newPairs);
   done();
 };
 
-async function onAvatarClick(hash: string): Promise<void> {
+async function onAvatarClick(key: Key): Promise<void> {
   usernameRef.value?.resetValidation();
   await nextTick();
   const succesfulValidation = await usernameRef.value?.validate();
@@ -71,25 +77,20 @@ async function onAvatarClick(hash: string): Promise<void> {
     return;
   }
 
-  onDialogOK({ peerId: hash, username: username.value });
+  onDialogOK({
+    key,
+    username: username.value,
+  });
 }
 </script>
 
 <style lang="sass">
 .avatar-picker
   .icon-flex-container
-    display: flex
-    flex-direction: row
-    flex-wrap: wrap
-    align-content: flex-start
-    justify-content: space-around
-    max-width: 600px
-    border-radius: 10px
+    display: grid
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))
 
     & .jdent-icon
-      width: 150px
-      height: 150px
-      flex: 1 0 auto
       cursor: pointer
       border-radius: 50%
       cursor: pointer
