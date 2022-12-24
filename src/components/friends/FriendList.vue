@@ -8,7 +8,7 @@
         <q-item
           v-for="friend of contacts"
           :key="friend.id"
-          :class="{ 'animated pulse highlight': friend.reactive.highlight }"
+          :class="{ 'animated pulse highlight': friend.highlight }"
         >
           <q-item-section avatar>
             <q-avatar>
@@ -17,28 +17,50 @@
           </q-item-section>
           <q-item-section>
             <q-item-label lines="1" style="text-overflow: ellipsis; width: 5em">
-              {{ friend.reactive.username ?? friend.id }}
+              {{ friend.username }}
             </q-item-label>
             <q-item-label caption>
-              <span
-                class="text-grey"
-                v-if="friend.reactive.status === 'outgoing friend request'"
+              <div
+                v-if="friend.status === 'outgoing friend request'"
+                class="text-grey row items-center"
               >
                 Pending
-              </span>
-              <span
-                class="text-primary"
-                v-else-if="friend.reactive.status === 'incoming friend request'"
-                >Friend Request</span
+              </div>
+              <div
+                v-else-if="friend.status === 'incoming friend request'"
+                class="text-primary row items-center"
               >
-              <span class="text-positive" v-else-if="friend.reactive.connected">
-                <q-icon name="check" color="positive" />
+                Friend Request
+              </div>
+              <div
+                v-else-if="friend.verification === 'untrusted'"
+                class="text-negative lighter-negative row items-center"
+              >
+                <q-icon name="no_encryption" class="q-mr-xs" />
+                Authentication failed
+              </div>
+              <div
+                v-else-if="
+                  friend.connected && friend.verification === 'verified'
+                "
+                class="text-positive row items-center"
+              >
+                <q-icon name="verified" class="q-mr-xs" />
                 Connected
-              </span>
-              <span class="text-grey" v-else> Not connected </span>
+              </div>
+              <div
+                v-else-if="
+                  friend.connected && friend.verification === 'pending'
+                "
+                class="text-primary row items-center"
+              >
+                <q-icon name="pending" class="q-mr-xs" />
+                Checking
+              </div>
+              <div v-else class="text-grey">Not connected</div>
             </q-item-label>
           </q-item-section>
-          <q-item-section side v-if="friend.reactive.status === 'friend'">
+          <q-item-section side v-if="friend.status === 'friend'">
             <q-icon name="keyboard_arrow_down" style="cursor: pointer" />
             <q-menu auto-close :offset="[-18, -8]">
               <q-list style="min-width: 150px">
@@ -71,7 +93,7 @@
 
           <q-item-section
             side
-            v-else-if="friend.reactive.status === 'incoming friend request'"
+            v-else-if="friend.status === 'incoming friend request'"
           >
             <q-btn-group push>
               <q-btn
@@ -97,7 +119,7 @@
           </q-item-section>
           <q-item-section
             side
-            v-else-if="friend.reactive.status === 'outgoing friend request'"
+            v-else-if="friend.status === 'outgoing friend request'"
           >
             <q-btn
               flat

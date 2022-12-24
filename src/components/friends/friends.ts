@@ -1,7 +1,12 @@
+import { whenever } from '@vueuse/shared';
 import type { DataConnection } from 'peerjs';
-import { peer, username as myUsername } from 'src/utils/peer';
+import { peer } from 'src/utils/peer';
+import { decrypt, generateRiddle } from 'src/utils/security';
+import { sleep } from 'src/utils/sleep';
+import { username as myUsername } from 'src/utils/username';
 import { Unreliable } from 'src/utils/utility-types';
-import { reactive, ref, toRaw, watch } from 'vue';
+import type { Writable } from 'type-fest';
+import { markRaw, reactive, Ref, ref, watch } from 'vue';
 
 type ContactStatus =
   | 'incoming friend request'
@@ -9,91 +14,147 @@ type ContactStatus =
   | 'friend'
   | 'ignore';
 
-export class Contact {
-  reactive = reactive({
-    connected: false,
-    highlight: false,
-    status: 'ignore' as ContactStatus,
-    username: undefined as string | undefined,
-  });
+type VerificationStatus = 'pending' | 'verified' | 'untrusted';
 
-  private _connection?: DataConnection;
+type CallerMetadata = {
+  username: string;
+  callerAuthenticationRiddle: number[];
+};
 
-  get connection() {
-    return this._connection;
-  }
+type CalleeHandshakeData = {
+  message: 'Hello my friend';
+  username: string;
+  calleeAuthenticationAnswer: number[];
+  calleeAuthenticationRiddle: number[];
+};
 
-  set connection(value) {
-    this._connection = toRaw(value);
+type CallerHandshakeData = {
+  callerAuthenticationAnswer: number[];
+};
 
-    this._connection?.on('open', () => {
-      this.reactive.connected = true;
-    });
-
-    this._connection?.on('close', () => {
-      this.reactive.connected = false;
-    });
-
-    this._connection?.on('iceStateChanged', (state) => {
-      if (state === 'disconnected') this.reactive.connected = false;
-    });
-
-    this._connection?.on('data', (_data) => {
-      const data = _data as Unreliable<Greetings>;
-      if (data?.message === 'Hello my friend') {
-        this.reactive.status = 'friend';
-        this.reactive.username = data?.username ?? undefined;
-      }
-    });
-  }
-
-  constructor(
-    public readonly id: string,
-    status: ContactStatus,
-    username: string | undefined = undefined,
-  ) {
-    this.reactive.status = status;
-    this.reactive.username = username;
-
-    if (
-      this.reactive.status === 'friend' ||
-      this.reactive.status === 'outgoing friend request'
-    )
-      this.connection = this.connect();
-  }
-
-  remove(): void {
-    this.connection?.close();
-    contacts.value = contacts.value.filter((friend) => friend.id !== this.id);
-  }
-
-  acceptFriendRequest(): void {
-    this.reactive.status = 'friend';
-    this.connection = this.connect();
-  }
-
-  private connect(): DataConnection {
-    return peer.connect(this.id, { metadata: { username: myUsername.value } });
-  }
+export interface Contact {
+  readonly id: string;
+  readonly username: string;
+  readonly status: ContactStatus;
+  readonly connected: boolean;
+  readonly verification: VerificationStatus;
+  readonly connection?: DataConnection;
+  highlight: boolean;
+  remove(): void;
+  acceptFriendRequest(): Promise<void>;
 }
 
-export const contacts = ref(getContactsFromStorage());
+type WritableContact = Writable<Contact>;
+
+export async function newContact(
+  id: string,
+  status: ContactStatus,
+  username?: string,
+): Promise<Contact> {
+  const self: WritableContact = reactive({
+    id: id,
+    status: status,
+    username: username ?? `${id.slice(0, 5)}..${id.slice(-5)}`,
+    connected: false,
+    highlight: false,
+    verification: 'pending',
+    connection: undefined,
+    remove,
+    acceptFriendRequest,
+  });
+
+  whenever(
+    () => self.connection,
+    (connection) => {
+      connection.on('open', () => {
+        self.connected = true;
+      });
+
+      connection.on('close', () => {
+        self.connected = false;
+      });
+
+      connection.on('iceStateChanged', (state) => {
+        if (state === 'disconnected') self.connected = false;
+      });
+
+      connection.on('data', (_data) => {
+        if (self.verification !== 'verified') return;
+        const data = _data as Unreliable<CalleeHandshakeData>;
+        if (data?.message === 'Hello my friend') self.status = 'friend';
+        if (data?.username) self.username = data?.username;
+      });
+    },
+  );
+
+  if (status === 'friend' || status === 'outgoing friend request')
+    self.connection = await connect();
+
+  async function connect(): Promise<DataConnection> {
+    const { riddle, solution } = await generateRiddle(id);
+
+    const metadata: CallerMetadata = {
+      username: myUsername.value,
+      callerAuthenticationRiddle: riddle,
+    };
+
+    const connection = peer.connect(id, { metadata });
+
+    markRaw(connection);
+
+    connection.once('data', async (_data) => {
+      const data = _data as CalleeHandshakeData;
+      riddleChecker(data.calleeAuthenticationAnswer, solution, self);
+      if (self.verification !== 'verified') return;
+
+      const answerData: CallerHandshakeData = {
+        callerAuthenticationAnswer: await decrypt(
+          data.calleeAuthenticationRiddle,
+        ),
+      };
+
+      connection.send(answerData);
+    });
+
+    return connection;
+  }
+
+  function remove(): void {
+    self.connection?.close();
+    contacts.value = contacts.value.filter((friend) => friend.id !== id);
+  }
+
+  async function acceptFriendRequest(): Promise<void> {
+    self.status = 'friend';
+    self.connection = await connect();
+  }
+
+  return self;
+}
+
+const contacts = ref(await getContactsFromStorage()) as Ref<WritableContact[]>;
+const exportContacts = contacts as Ref<Contact[]>;
+export { exportContacts as contacts };
 
 watch(contacts, updateContactStorage, { deep: true });
 
-peer.on('connection', (connection) => {
+peer.on('connection', async (connection) => {
   const foundContact = contacts.value.find((x) => x.id === connection.peer);
 
-  if (foundContact?.reactive.status === 'outgoing friend request') {
-    foundContact.reactive.status = 'friend'; // 🤗
-    foundContact.reactive.username = connection.metadata.username;
-    greet(connection);
-  }
+  if (
+    foundContact?.status === 'friend' ||
+    foundContact?.status === 'outgoing friend request'
+  ) {
+    const metadata: CallerMetadata = connection.metadata;
 
-  if (foundContact?.reactive.status === 'friend') {
+    markRaw(connection);
+
+    foundContact.status = 'friend'; // 🤗
+    foundContact.username = metadata.username;
     foundContact.connection = connection;
-    foundContact.reactive.connected = true;
-    greet(connection);
+    foundContact.connected = true;
+
+    calleHandshake(foundContact);
     return;
   }
 
@@ -102,7 +163,7 @@ peer.on('connection', (connection) => {
 
   if (!foundContact) {
     contacts.value = [
-      new Contact(
+      await newContact(
         connection.peer,
         'incoming friend request',
         connection.metadata.username,
@@ -113,15 +174,49 @@ peer.on('connection', (connection) => {
   }
 });
 
-type Greetings = { message: 'Hello my friend'; username: string };
-function greet(connection: DataConnection): void {
-  setTimeout(() => {
-    const greetings: Greetings = {
-      message: 'Hello my friend',
-      username: myUsername.value,
-    };
-    connection!.send(greetings);
-  }, 500);
+function riddleChecker(
+  answer: unknown,
+  solution: number[],
+  friend: WritableContact,
+): void {
+  friend.verification =
+    Array.isArray(answer) &&
+    answer.length === solution.length &&
+    answer.every((value, index) => value === solution[index])
+      ? 'verified'
+      : 'untrusted';
+
+  if (friend.verification !== 'verified') {
+    friend.connection!.close();
+    throw new Error(
+      `Contact "${friend.username}" failed to authenticate itself! Connection was closed.`,
+    );
+  }
+}
+
+async function calleHandshake(friend: Contact): Promise<void> {
+  const connection = friend.connection!;
+
+  const requestMetadata: CallerMetadata = connection.metadata;
+  const answer = await decrypt(requestMetadata.callerAuthenticationRiddle);
+  const { riddle, solution } = await generateRiddle(connection.peer);
+
+  const data: CalleeHandshakeData = {
+    message: 'Hello my friend',
+    username: myUsername.value,
+    calleeAuthenticationAnswer: answer,
+    calleeAuthenticationRiddle: riddle,
+  };
+
+  // It seems like I can't send data just right after the
+  // peer.on('connection') event. Waiting 500ms seem to work fine.
+  await sleep(500);
+  connection.send(data);
+
+  connection.once('data', (_data) => {
+    const data = _data as CallerHandshakeData;
+    riddleChecker(data.callerAuthenticationAnswer, solution, friend);
+  });
 }
 
 type StoredContactProps = {
@@ -130,19 +225,21 @@ type StoredContactProps = {
   username: string | undefined;
 };
 
-function getContactsFromStorage(): Contact[] {
+async function getContactsFromStorage(): Promise<Contact[]> {
   const raw = localStorage.getItem('contacts') ?? '[]';
   const storedProps: StoredContactProps[] = JSON.parse(raw);
-  return storedProps.map(
-    ({ id, status, username }) => new Contact(id, status, username),
+  return await Promise.all(
+    storedProps.map(({ id, status, username }) =>
+      newContact(id, status, username),
+    ),
   );
 }
 
 function updateContactStorage(): void {
   const storedProps: StoredContactProps[] = contacts.value.map((contact) => ({
     id: contact.id,
-    status: contact.reactive.status,
-    username: contact.reactive.username,
+    status: contact.status,
+    username: contact.username,
   }));
   const raw = JSON.stringify(storedProps);
   localStorage.setItem('contacts', raw);

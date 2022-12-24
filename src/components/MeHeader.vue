@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { copyToClipboard } from 'src/utils/copy-to-clipboard';
 import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
-import { peerId, username } from 'src/utils/peer';
+import { serializedPublicKey } from 'src/utils/security';
+import { username } from 'src/utils/username';
 import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
@@ -42,11 +43,11 @@ const commitHash = process.env.COMMIT_HASH;
       <div class="text-subtitle1 q-mr-sm user-select-none">{{ username }}</div>
       <q-btn round flat>
         <q-avatar>
-          <jdent-icon :hash="peerId"></jdent-icon>
+          <jdent-icon :hash="serializedPublicKey"></jdent-icon>
         </q-avatar>
         <q-menu auto-close :offset="[110, 0]">
           <q-list separator style="min-width: 150px">
-            <q-item clickable @click="copyToClipboard(peerId)">
+            <q-item clickable @click="copyToClipboard(serializedPublicKey)">
               <q-item-section>
                 <q-item-label>Copy own peer ID </q-item-label>
               </q-item-section>
@@ -57,7 +58,7 @@ const commitHash = process.env.COMMIT_HASH;
                 transition-show="jump-left"
                 transition-hide="jump-right"
                 class="monospace"
-                >{{ peerId }}</q-tooltip
+                >{{ serializedPublicKey }}</q-tooltip
               >
             </q-item>
             <q-item

@@ -15,8 +15,9 @@
 </template>
 
 <script setup lang="ts">
+import { base33endingChar } from 'src/utils/base33';
 import { ref } from 'vue';
-import { Contact, contacts } from './friends';
+import { contacts, newContact } from './friends';
 
 const text = ref('');
 
@@ -26,24 +27,19 @@ function clearText(): void {
   }, 0);
 }
 
-function onInput(value: string): void {
-  const uuidRegex =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-
-  const id = uuidRegex.exec(value)?.[0];
-
-  if (id) {
+async function onInput(value: string): Promise<void> {
+  if (value.endsWith(base33endingChar)) {
     clearText();
-    const contactFound = contacts.value.find((friend) => friend.id === id);
+    const contactFound = contacts.value.find((friend) => friend.id === value);
 
     if (contactFound) {
-      contactFound.reactive.highlight = true;
-      setTimeout(() => (contactFound.reactive.highlight = false), 150);
+      contactFound.highlight = true;
+      setTimeout(() => (contactFound.highlight = false), 150);
       return;
     }
 
     contacts.value = [
-      new Contact(id, 'outgoing friend request'),
+      await newContact(value, 'outgoing friend request'),
       ...contacts.value,
     ];
   }
