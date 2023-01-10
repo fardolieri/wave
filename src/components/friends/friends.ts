@@ -1,5 +1,6 @@
 import type { DataConnection } from 'peerjs';
-import { peer, username as myUsername } from 'src/utils/peer';
+import { peer } from 'src/utils/peer';
+import { username as myUsername } from 'src/utils/username';
 import { Unreliable } from 'src/utils/utility-types';
 import { reactive, ref, toRaw, watch } from 'vue';
 
