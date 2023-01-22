@@ -99,13 +99,13 @@ const config: PlaywrightTestConfig = {
   // outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command:
-      'node node_modules/@quasar/cli/bin/quasar.js serve --https --port 3000 dist/pwa',
-    port: 3000,
-    timeout: 60 * 1000,
-    reuseExistingServer: !process.env.CI,
-  },
+  // webServer: {
+  //   command:
+  //     'node node_modules/@quasar/cli/bin/quasar.js serve --https --port 3000 dist/pwa',
+  //   port: 3000,
+  //   timeout: 60 * 1000,
+  //   reuseExistingServer: !process.env.CI,
+  // },
 };
 
 export default config;
