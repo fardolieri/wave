@@ -43,31 +43,18 @@ const commitHash = process.env.COMMIT_HASH;
       <div class="text-subtitle1 q-mr-sm user-select-none">
         {{ myUsername }}
       </div>
-      <q-btn round flat>
-        <q-avatar>
-          <jdent-icon :hash="serializedPublicKey"></jdent-icon>
-        </q-avatar>
+      <q-avatar class="q-mr-xs">
+        <jdent-icon :hash="serializedPublicKey"></jdent-icon>
+      </q-avatar>
+      <q-btn icon="more_vert" :ripple="false" dense round flat>
         <q-menu auto-close :offset="[110, 0]">
           <q-list separator style="min-width: 150px">
             <q-item clickable @click="copyToClipboard(serializedPublicKey)">
               <q-item-section>
                 <q-item-label>Copy own peer ID </q-item-label>
               </q-item-section>
-              <q-tooltip
-                :delay="700"
-                anchor="center left"
-                self="center right"
-                transition-show="jump-left"
-                transition-hide="jump-right"
-                class="monospace"
-                >{{ serializedPublicKey }}</q-tooltip
-              >
             </q-item>
-            <q-item
-              v-if="commitHash"
-              clickable
-              @click="copyToClipboard(commitHash!)"
-            >
+            <q-item v-if="commitHash" @click.prevent>
               <q-item-section style="width: 200px">
                 <q-item-label>Commit</q-item-label>
                 <q-item-label caption class="ellipsis text-grey">{{

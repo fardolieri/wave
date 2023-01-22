@@ -34,7 +34,7 @@
               </div>
               <div
                 v-else-if="friend.verification === 'untrusted'"
-                class="text-negative lighter-negative row items-center"
+                class="text-negative row items-center"
               >
                 <q-icon name="no_encryption" class="q-mr-xs" />
                 Authentication failed

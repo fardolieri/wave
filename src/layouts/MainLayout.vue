@@ -17,32 +17,6 @@
 
           <q-space />
 
-          <q-btn round flat icon="message" />
-          <q-btn round flat icon="more_vert">
-            <q-menu auto-close :offset="[110, 8]">
-              <q-list style="min-width: 150px">
-                <q-item clickable>
-                  <q-item-section>New group</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Profile</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Archived</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Favorites</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Settings</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <q-item-section>Logout</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
-          </q-btn>
-
           <q-btn
             round
             flat

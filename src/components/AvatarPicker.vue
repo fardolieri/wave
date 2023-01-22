@@ -14,7 +14,6 @@
           ref="usernameRef"
           v-model="username"
           label="Username"
-          class="lighter-negative"
           :autofocus="true"
           :rules="[Boolean]"
         ></q-input>
