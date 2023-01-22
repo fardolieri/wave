@@ -100,8 +100,9 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command:
-      'node node_modules/@quasar/cli/bin/quasar.js serve --https dist/pwa https://localhost:4000',
+    // command:
+    //   'node node_modules/@quasar/cli/bin/quasar.js serve --https dist/pwa https://localhost:4000',
+    command: 'echo "I will not start a server to inspect the error message"',
     port: 4000,
     timeout: 60 * 1000,
     reuseExistingServer: !process.env.CI,
