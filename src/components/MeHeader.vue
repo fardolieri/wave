@@ -2,7 +2,7 @@
 import { copyToClipboard } from 'src/utils/copy-to-clipboard';
 import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
 import { serializedPublicKey } from 'src/utils/security';
-import { username } from 'src/utils/username';
+import { myUsername } from 'src/utils/username';
 import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
@@ -40,7 +40,9 @@ const commitHash = process.env.COMMIT_HASH;
 
       <q-space />
 
-      <div class="text-subtitle1 q-mr-sm user-select-none">{{ username }}</div>
+      <div class="text-subtitle1 q-mr-sm user-select-none">
+        {{ myUsername }}
+      </div>
       <q-btn round flat>
         <q-avatar>
           <jdent-icon :hash="serializedPublicKey"></jdent-icon>
