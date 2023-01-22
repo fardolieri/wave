@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { base33endingChar } from 'src/utils/base33';
 import { ref } from 'vue';
-import { contacts, newContact } from './friends';
+import { contacts, newContact } from '../../utils/friends';
 
 const text = ref('');
 

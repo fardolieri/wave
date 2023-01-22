@@ -139,7 +139,7 @@
 
 <script setup lang="ts">
 import JdentIcon from '../JdentIcon.vue';
-import { contacts } from './friends';
+import { contacts } from '../../utils/friends';
 </script>
 
 <style lang="sass" scoped>
