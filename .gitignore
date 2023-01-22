@@ -34,3 +34,8 @@ yarn-error.log*
 
 cert/cert.pem
 cert/key.pem
+
+# Added by Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
