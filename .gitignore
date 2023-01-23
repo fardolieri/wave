@@ -39,3 +39,6 @@ cert/key.pem
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Turborepo config
+.turbo
