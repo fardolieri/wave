@@ -37,3 +37,10 @@ $colors: ("dark-alt": $dark-alt, "dark-alt-2": $dark-alt-2, "dark-alt-3": $dark-
 
   .bg-#{$idx}
     background: $color !important
+
+
+// Reverts the new quasar default dark theme shadow color.
+// Cudos to https://github.com/quasarframework/quasar/issues/15143#issuecomment-1359308463
+$separator-dark-color: rgba(0, 0, 0, 0.12)
+$dark-shadow-color: #000
+$layout-shadow-dark: 0 0 10px 2px rgba(0, 0, 0, 0.2), 0 0px 10px rgba(0, 0, 0, 0.24)
