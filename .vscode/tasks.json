@@ -18,6 +18,12 @@
       "problemMatcher": [],
       "label": "Run tests",
       "detail": "playwright test"
+    },
+    {
+      "type": "shell",
+      "command": "turbo deploy",
+      "problemMatcher": [],
+      "label": "Deploy to github pages"
     }
   ]
 }
