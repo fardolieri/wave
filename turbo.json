@@ -11,7 +11,7 @@
     "test": {
       "dependsOn": ["build"]
     },
-    "deploy-to-gh": {
+    "deploy": {
       "dependsOn": ["lint", "test", "build-for-gh"]
     }
   }

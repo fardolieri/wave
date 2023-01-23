@@ -10,7 +10,7 @@
     "ngrok": "ngrok http https://localhost:9200/",
     "build": "quasar build --mode pwa",
     "build-for-gh": "cross-env PUBLIC_PATH=/wave npm run build",
-    "deploy-to-gh": "gh-pages --dist dist/pwa --no-history",
+    "deploy": "gh-pages --dist dist/pwa --no-history",
     "serve": "node node_modules/@quasar/cli/bin/quasar.js serve --https --port 3000 --cert=cert/cert.pem --key=cert/key.pem dist/pwa",
     "lint": "cross-env TIMING=1 eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,,html,md,json}\" --ignore-path .gitignore",
