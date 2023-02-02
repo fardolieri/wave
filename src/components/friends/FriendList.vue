@@ -101,6 +101,7 @@
                 size="sm"
                 color="positive"
                 icon="done"
+                aria-label="Accept"
                 @click="friend.acceptFriendRequest()"
               >
                 <q-tooltip>Accpet</q-tooltip>
@@ -111,6 +112,7 @@
                 size="sm"
                 color="negative"
                 icon="close"
+                aria-label="Decline"
                 @click="friend.remove()"
               >
                 <q-tooltip>Decline</q-tooltip></q-btn

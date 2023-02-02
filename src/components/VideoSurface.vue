@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core';
 import { mediaStream } from 'src/utils/media-stream';
 import DraggableWithBounding from 'src/utils/renderless-components/DraggableWithBounding.vue';
 import { onMounted, ref, watch } from 'vue';
@@ -12,10 +13,12 @@ function trySettingSrcObject(): void {
   if (!videoRef.value) return;
   videoRef.value.srcObject = mediaStream.value ?? null;
 }
+
+const { width } = useWindowSize();
 </script>
 
 <template>
-  <DraggableWithBounding :padding="5">
+  <DraggableWithBounding :padding="5" v-if="width > 600">
     <div class="video-container shadow-3">
       <div v-show="!mediaStream" class="video-skeleton"></div>
       <video v-show="mediaStream" ref="videoRef" autoplay></video>

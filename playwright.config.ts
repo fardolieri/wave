@@ -7,6 +7,10 @@ import { devices } from '@playwright/test';
  */
 // require('dotenv').config();
 
+const useRunningDevelopmentServer = Object.keys(process.env).some((env) =>
+  env.startsWith('PW_TEST_'),
+);
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -36,7 +40,9 @@ const config: PlaywrightTestConfig = {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'https://localhost:3000',
+    baseURL: useRunningDevelopmentServer
+      ? 'https://localhost:9200'
+      : 'https://localhost:3000',
     ignoreHTTPSErrors: true,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
@@ -99,13 +105,15 @@ const config: PlaywrightTestConfig = {
   // outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command:
-      'node node_modules/@quasar/cli/bin/quasar.js serve --https --port 3000 dist/pwa',
-    port: 3000,
-    timeout: 60 * 1000,
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: useRunningDevelopmentServer
+    ? undefined
+    : {
+        command:
+          'node node_modules/@quasar/cli/bin/quasar.js serve --https --port 3000 dist/pwa',
+        port: 3000,
+        timeout: 60 * 1000,
+        reuseExistingServer: !process.env.CI,
+      },
 };
 
 export default config;

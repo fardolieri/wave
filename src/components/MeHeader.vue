@@ -18,6 +18,7 @@ const commitHash = process.env.COMMIT_HASH;
         flat
         icon="keyboard_arrow_left"
         class="WAL__drawer-open q-mr-sm"
+        aria-label="Open drawer"
         @click="$emit('toggle-left-drawer')"
       />
 
