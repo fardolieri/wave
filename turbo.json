@@ -7,12 +7,13 @@
     "build-for-gh": {
       "outputs": ["dist/**"]
     },
-    "lint": {},
+    "lint:eslint": {},
+    "lint:vue-tsc": {},
     "test": {
       "dependsOn": ["build"]
     },
     "deploy": {
-      "dependsOn": ["lint", "test", "build-for-gh"]
+      "dependsOn": ["lint:eslint", "lint:vue-tsc", "test", "build-for-gh"]
     }
   }
 }
