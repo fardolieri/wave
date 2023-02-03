@@ -1,11 +1,11 @@
 import type { DataConnection } from 'peerjs';
-import { peer } from 'src/utils/peer';
-import { myUsername } from 'src/utils/username';
+import { peer } from 'src/core/peer';
+import { myUsername } from 'src/core/username';
 import type { Writable } from 'type-fest';
 import { markRaw } from 'vue';
 import { Contact as _Contact, contacts, newContact } from './friends';
 import { decrypt, generateRiddle } from './security';
-import { sleep } from './sleep';
+import { sleep } from '../utils/sleep';
 
 /**
  * Client A                                      Client B

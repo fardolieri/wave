@@ -1,10 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from './two-clients-test-setup';
 
-test('title is WΛVE', async ({ page }) => {
-  await expect(page).toHaveTitle('WΛVE');
-});
-
 test.describe('Test peer to peer interaction', () => {
   test.beforeEach(async ({ pageA, pageB, isMobile }) => {
     if (isMobile) {

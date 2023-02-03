@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
 import JdentIcon from '../JdentIcon.vue';
-import { contacts } from '../../utils/friends';
+import { contacts } from '../../core/friends';
 </script>
 
 <style lang="sass" scoped>

@@ -1,7 +1,7 @@
 import { Dialog } from 'quasar';
 import AvatarPicker from '../components/AvatarPicker.vue';
 import { myUsername } from './username';
-import { base33Decode, base33Encode } from './base33';
+import { base33Decode, base33Encode } from '../utils/base33';
 
 const algorithm = { name: 'RSA-OAEP', hash: 'SHA-256' } as const;
 

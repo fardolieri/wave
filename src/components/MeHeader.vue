@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { copyToClipboard } from 'src/utils/copy-to-clipboard';
 import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
-import { serializedPublicKey } from 'src/utils/security';
-import { myUsername } from 'src/utils/username';
+import { serializedPublicKey } from 'src/core/security';
+import { myUsername } from 'src/core/username';
 import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();

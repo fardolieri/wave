@@ -44,8 +44,8 @@
 <script setup lang="ts">
 import type { QInput } from 'quasar';
 import { useDialogPluginComponent } from 'quasar';
-import type { KeyPair } from 'src/utils/security';
-import { newKeyPair } from 'src/utils/security';
+import type { KeyPair } from 'src/core/security';
+import { newKeyPair } from 'src/core/security';
 import { nextTick, ref } from 'vue';
 import JdentIcon from './JdentIcon.vue';
 

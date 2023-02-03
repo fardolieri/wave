@@ -56,4 +56,7 @@ async function initializeClient(username: string, page: Page): Promise<void> {
   await page.getByText('Chose your Username').waitFor({ state: 'visible' });
   await page.getByLabel('Username').type(username);
   await page.locator('.jdent-icon:first-child').click();
+  await page
+    .locator('.q-toolbar', { hasText: username })
+    .waitFor({ state: 'visible' });
 }
