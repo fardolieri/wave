@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "lib": ["DOM", "WebWorker", "ESNext"]
+    "lib": ["WebWorker", "ESNext"]
   },
   "include": ["*.ts", "*.d.ts"]
 }

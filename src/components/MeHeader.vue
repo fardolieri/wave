@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { copyToClipboard } from 'src/utils/copy-to-clipboard';
-import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
 import { serializedPublicKey } from 'src/core/security';
 import { myUsername } from 'src/core/username';
+import { copyToClipboard } from 'src/utils/copy-to-clipboard';
+import { mediaStream, requestMediaStream } from 'src/utils/media-stream';
+import { newVersionAvailable } from '../utils/new-version-available';
 import JdentIcon from './JdentIcon.vue';
 
 defineEmits<{ (e: 'toggle-left-drawer'): void }>();
@@ -40,6 +41,18 @@ const commitHash = process.env.COMMIT_HASH;
       ></q-btn>
 
       <q-space />
+
+      <q-btn
+        v-if="newVersionAvailable"
+        flat
+        round
+        icon="download"
+        class="q-mr-md"
+        color="positive"
+        @click="window.location.reload()"
+      >
+        <q-tooltip>A new version is available</q-tooltip>
+      </q-btn>
 
       <div class="text-subtitle1 q-mr-sm user-select-none">
         {{ myUsername }}

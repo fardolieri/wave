@@ -1,4 +1,5 @@
 import { register } from 'register-service-worker';
+import { newVersionAvailable } from '../src/utils/new-version-available';
 
 // The ready(), registered(), cached(), updatefound() and updated()
 // events passes a ServiceWorkerRegistration instance in their arguments.
@@ -29,7 +30,7 @@ register(process.env.SERVICE_WORKER_FILE, {
 
   updated(/* registration */) {
     console.log('New content is available; please refresh.');
-    location.reload();
+    newVersionAvailable.value = true;
   },
 
   offline() {
@@ -38,7 +39,7 @@ register(process.env.SERVICE_WORKER_FILE, {
     );
   },
 
-  error(/* err */) {
-    // console.error('Error during service worker registration:', err)
+  error(err) {
+    console.error('Error during service worker registration:', err);
   },
 });
