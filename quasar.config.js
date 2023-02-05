@@ -72,7 +72,7 @@ module.exports = configure(function (/* ctx */) {
       // ignorePublicFolder: true,
       // minify: false,
       // polyfillModulePreload: true,
-      // distDir
+      distDir: process.env.DIST_DIR ?? undefined,
 
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
