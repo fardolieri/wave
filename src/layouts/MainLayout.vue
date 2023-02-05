@@ -7,30 +7,30 @@
       ></me-header>
 
       <q-drawer v-model="leftDrawerOpen" show-if-above :breakpoint="690">
-        <q-toolbar>
-          <div
-            class="text-h6"
-            style="font-family: sans-serif; user-select: none"
-          >
-            WΛVE
+        <div class="column no-wrap" style="height: 100%">
+          <div class="column q-px-md q-mb-sm">
+            <div class="row q-py-sm items-center justify-between">
+              <div
+                class="text-h6"
+                style="font-family: sans-serif; user-select: none"
+              >
+                WΛVE
+              </div>
+
+              <q-btn
+                round
+                flat
+                icon="close"
+                class="WAL__drawer-close"
+                @click="toggleLeftDrawer"
+              />
+            </div>
+
+            <add-friend-input></add-friend-input>
           </div>
 
-          <q-space />
-
-          <q-btn
-            round
-            flat
-            icon="close"
-            class="WAL__drawer-close"
-            @click="toggleLeftDrawer"
-          />
-        </q-toolbar>
-
-        <q-toolbar>
-          <add-friend-input></add-friend-input>
-        </q-toolbar>
-
-        <friends-list></friends-list>
+          <friend-list></friend-list>
+        </div>
       </q-drawer>
 
       <q-page-container class="dark-transparent">
@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import AddFriendInput from 'src/components/friends/AddFriendInput.vue';
-import FriendsList from 'src/components/friends/FriendList.vue';
+import FriendList from 'src/components/friends/FriendList.vue';
 import MeHeader from 'src/components/MeHeader.vue';
 import { computed, ref } from 'vue';
 

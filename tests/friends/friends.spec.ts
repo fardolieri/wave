@@ -44,11 +44,12 @@ test.describe('Test peer to peer interaction', () => {
   test('userB can decline userA', async ({ pageA, pageB, publicIdB }) => {
     await pageA.getByPlaceholder("Paste your friend's peer ID").fill(publicIdB);
 
-    await expect(pageB.getByText('userA')).toBeVisible();
+    const userALocator = pageB.locator('.friend-list', { hasText: 'userA' });
+    await expect(userALocator).toBeVisible();
 
-    await pageB.getByRole('button', { name: 'Decline' }).click();
+    await pageB.getByRole('button', { name: 'Ignore' }).click();
 
     await expect(pageA.getByText('Pending')).toBeVisible();
-    await expect(pageB.getByText('userA')).not.toBeVisible();
+    await expect(userALocator).not.toBeVisible();
   });
 });

@@ -85,17 +85,7 @@ export async function newContactConnection(
     });
   });
 
-  connection.on('open', () => {
-    contact.connected = true;
-  });
-
-  connection.on('close', () => {
-    contact.connected = false;
-  });
-
-  connection.on('iceStateChanged', (state) => {
-    if (state === 'disconnected') contact.connected = false;
-  });
+  addConnectionStatusListener(connection, contact);
 
   return connection;
 }
@@ -127,6 +117,7 @@ peer.on('connection', async (connection) => {
     markRaw(connection);
     foundContact.connection = connection;
     foundContact.connected = true;
+    addConnectionStatusListener(connection, foundContact);
     return;
   }
 
@@ -190,4 +181,21 @@ function riddleChecker(answer: unknown, solution: number[]) {
     answer.every((value, index) => value === solution[index])
     ? 'verified'
     : 'untrusted';
+}
+
+function addConnectionStatusListener(
+  connection: DataConnection,
+  contact: Contact,
+): void {
+  connection.on('open', () => {
+    contact.connected = true;
+  });
+
+  connection.on('close', () => {
+    contact.connected = false;
+  });
+
+  connection.on('iceStateChanged', (state) => {
+    if (state === 'disconnected') contact.connected = false;
+  });
 }

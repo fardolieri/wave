@@ -2,7 +2,6 @@ import Peer from 'peerjs';
 import { serializedPublicKey } from './security';
 
 export const peer = new Peer(serializedPublicKey, {
-  debug: import.meta.env.DEV ? 3 : 0,
   secure: true,
 });
 

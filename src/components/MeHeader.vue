@@ -67,6 +67,9 @@ const commitHash = process.env.COMMIT_HASH;
               <q-item-section>
                 <q-item-label>Copy own peer ID </q-item-label>
               </q-item-section>
+              <q-item-section avatar
+                ><q-icon name="content_copy"></q-icon
+              ></q-item-section>
             </q-item>
             <q-item v-if="commitHash" @click.prevent>
               <q-item-section style="width: 200px">

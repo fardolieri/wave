@@ -20,6 +20,8 @@ export interface Contact {
   readonly connection?: DataConnection;
   highlight: boolean;
   remove(): void;
+  ignore(): void;
+  pardon(): Promise<void>;
   acceptFriendRequest(): Promise<void>;
 }
 
@@ -31,12 +33,14 @@ export async function newContact(
   const self: Writable<Contact> = reactive({
     id: id,
     status: status,
-    username: username ?? `${id.slice(0, 5)}..${id.slice(-5)}`,
+    username: username ?? id,
     connected: false,
     highlight: false,
     verification: 'pending',
     connection: undefined,
     remove,
+    ignore,
+    pardon,
     acceptFriendRequest,
   });
 
@@ -46,6 +50,16 @@ export async function newContact(
   function remove(): void {
     self.connection?.close();
     contacts.value = contacts.value.filter((friend) => friend.id !== id);
+  }
+
+  function ignore(): void {
+    self.connection?.close();
+    self.status = 'ignore';
+  }
+
+  async function pardon(): Promise<void> {
+    self.status = 'friend';
+    self.connection = await newContactConnection(self);
   }
 
   async function acceptFriendRequest(): Promise<void> {
