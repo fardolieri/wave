@@ -1,0 +1,1 @@
+import{b as i}from"./index.a86cca2e.js";var r=i(async({app:o})=>{o.config.globalProperties.window=window,o.config.globalProperties.$console=console,o.config.globalProperties.$navigator=navigator});export{r as default};
