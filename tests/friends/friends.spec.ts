@@ -34,10 +34,9 @@ test.describe('Test peer to peer interaction', () => {
     await pageA.getByPlaceholder("Paste your friend's peer ID").fill(publicIdB);
 
     await expect(pageB.getByText('userA')).toBeVisible();
-
     await pageB.getByRole('button', { name: 'Accept' }).click();
+    await expect(pageB.getByText('Connected')).toBeVisible();
 
-    await expect(pageA.getByText('Connected')).toBeVisible();
     await expect(pageA.getByText('Connected')).toBeVisible();
   });
 
@@ -46,10 +45,9 @@ test.describe('Test peer to peer interaction', () => {
 
     const userALocator = pageB.locator('.friend-list', { hasText: 'userA' });
     await expect(userALocator).toBeVisible();
-
     await pageB.getByRole('button', { name: 'Ignore' }).click();
+    await expect(userALocator).not.toBeVisible();
 
     await expect(pageA.getByText('Pending')).toBeVisible();
-    await expect(userALocator).not.toBeVisible();
   });
 });
